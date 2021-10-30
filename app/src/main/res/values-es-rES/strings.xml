@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PuzzlePals</string>
+    <string name="logo_description">Logo Puzzle Pals</string>
+    <string name="play">Jugar</string>
+    <string name="better_scores">Mejores Puntuaciones</string>
+    <string name="better_scores_empty_list">Todavía no existe ninguna puntuación</string>
+    <string name="help">Ayuda</string>
+</resources>

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">PuzzlePals</string>
+    <string name="logo_description">Puzzle Pals logo</string>
+    <string name="play">Play</string>
+    <string name="better_scores">Betters Scores</string>
+    <string name="better_scores_empty_list">There is no score yet</string>
+    <string name="help">Help</string>
 </resources>
