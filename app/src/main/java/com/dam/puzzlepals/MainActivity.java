@@ -1,5 +1,6 @@
 package com.dam.puzzlepals;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import com.dam.puzzlepals.entities.Score;
 import com.dam.puzzlepals.enums.Levels;
 import com.dam.puzzlepals.sqlite.ScoreAPI;
 import com.dam.puzzlepals.ui.ScoreListAdapter;
+import com.dam.puzzlepals.ui.SelectImgActivity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickPlayButton(View view) {
-        // TODO: Redirect to Selected Image Activity
+        Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
+        startActivity(selectImageActivityIntent);
     }
 
 }

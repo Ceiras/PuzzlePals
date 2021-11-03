@@ -5,4 +5,8 @@
     <string name="better_scores">Betters Scores</string>
     <string name="better_scores_empty_list">There is no score yet</string>
     <string name="help">Help</string>
+    <string name="selec_img">Select Image</string>
+    <string name="selected_img_description">Selected Image</string>
+    <string name="easy">Easy</string>
+    <string name="hard">Hard</string>
 </resources>

@@ -6,4 +6,8 @@
     <string name="better_scores">Mejores Puntuaciones</string>
     <string name="better_scores_empty_list">Todavía no existe ninguna puntuación</string>
     <string name="help">Ayuda</string>
+    <string name="selec_img">Select Image</string>
+    <string name="selected_img_description">Selected Image</string>
+    <string name="easy">Easy</string>
+    <string name="hard">Hard</string>
 </resources>
