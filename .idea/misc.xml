@@ -11,6 +11,10 @@
         <entry key="..\:/projects/PuzzlePals/app/src/main/res/menu/menu_action.xml" value="0.2796875" />
         <entry key="app/src/main/res/layout/activity_select_img.xml" value="0.19947916666666668" />
         <entry key="app/src/main/res/layout/activity_select_level.xml" value="0.19947916666666668" />
+        <entry key="app/src/main/res/layout/activity_welcome.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/celda_puzzle_grid_view.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/congrats_dialogue.xml" value="0.14375" />
+        <entry key="app/src/main/res/layout/fragment_puzzle.xml" value="0.17426545086119555" />
       </map>
     </option>
   </component>

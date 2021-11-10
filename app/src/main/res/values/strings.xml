@@ -9,4 +9,9 @@
     <string name="selected_img_description">Selected Image</string>
     <string name="easy">Easy</string>
     <string name="hard">Hard</string>
+    <string name="clickPieces">Seleccione una pieza para cambiarla de posición</string>
+    <string name="congrats">¡Felicidades!</string>
+    <string name="puzzle_completed">Tu puntuación es de:</string>
+    <string name="new_puzzle">Otra vez</string>
+    <string name="menu_home">Home</string>
 </resources>

@@ -16,6 +16,9 @@
             android:name=".ui.SelectImgActivity"
             android:exported="true" />
         <activity
+            android:name=".ui.PuzzleActivity"
+            android:exported="true" />
+        <activity
             android:name=".WelcomeActivity"
             android:exported="true"
             android:theme="@style/Theme.PuzzlePals.NoActionBar" >
