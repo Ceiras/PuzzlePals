@@ -4,27 +4,57 @@ import android.graphics.Bitmap;
 
 public class PuzzlePiece {
 
-    private int postion;
-    private int posY;
+    private Bitmap bitmap;
     private int posX;
-    private Bitmap imagePiece;
+    private int posY;
+    private int width;
+    private int height;
 
-    public PuzzlePiece(int postion, int posY, int posX) {
-        this.postion = postion;
+    public PuzzlePiece(Bitmap bitmap, int posX, int posY, int width, int height) {
+        this.bitmap = bitmap;
+        this.posX = posX;
         this.posY = posY;
+        this.width = width;
+        this.height = height;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    public int getPosX() {
+        return posX;
+    }
+
+    public void setPosX(int posX) {
         this.posX = posX;
     }
 
-    public PuzzlePiece(Bitmap bitmap) {
-        this.imagePiece = bitmap;
+    public int getPosY() {
+        return posY;
     }
 
-    public Bitmap getImagePiece() {
-        return imagePiece;
+    public void setPosY(int posY) {
+        this.posY = posY;
     }
 
-    public void setImagePiece(Bitmap imagePiece) {
-        this.imagePiece = imagePiece;
+    public int getWidth() {
+        return width;
     }
 
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
 }

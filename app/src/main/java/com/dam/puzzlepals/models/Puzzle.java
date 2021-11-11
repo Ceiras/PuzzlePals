@@ -85,10 +85,35 @@ public class Puzzle {
     }
 
     public void splitPuzzle() {
-        List<Bitmap> puzzlePiecesBitmap = this.splitImage(this.getImage());
-        for (Bitmap bitmap : puzzlePiecesBitmap) {
-            PuzzlePiece puzzlePiece = new PuzzlePiece(bitmap);
-            this.puzzlePieces.add(puzzlePiece);
+        int rows = 1;
+        int cols = 1;
+
+        switch (this.getLevel()) {
+            case EASY:
+                rows = 3;
+                cols = 3;
+                break;
+            case HARD:
+                rows = 4;
+                cols = 4;
+                break;
+        }
+
+        Bitmap image = this.getImage();
+
+        int pieceWidth = image.getWidth() / cols;
+        int pieceHeight = image.getHeight() / rows;
+
+        int posY = 0;
+        for (int row = 0; row < rows; row++) {
+            int posX = 0;
+            for (int col = 0; col < cols; col++) {
+                Bitmap bitmap = Bitmap.createBitmap(image, posX, posY, pieceWidth, pieceHeight);
+                PuzzlePiece puzzlePiece = new PuzzlePiece(bitmap, posX, posY, pieceWidth, pieceHeight);
+                this.puzzlePieces.add(puzzlePiece);
+                posX += pieceWidth;
+            }
+            posY += pieceHeight;
         }
     }
 
@@ -129,36 +154,4 @@ public class Puzzle {
                 '}';
     }
 
-    private List<Bitmap> splitImage(Bitmap image) {
-        int rows = 1;
-        int cols = 1;
-
-        switch (this.getLevel()) {
-            case EASY:
-                rows = 3;
-                cols = 3;
-                break;
-            case HARD:
-                rows = 4;
-                cols = 4;
-                break;
-        }
-
-        List<Bitmap> pieces = new ArrayList<>();
-
-        int pieceWidth = image.getWidth() / cols;
-        int pieceHeight = image.getHeight() / rows;
-
-        int posY = 0;
-        for (int row = 0; row < rows; row++) {
-            int posX = 0;
-            for (int col = 0; col < cols; col++) {
-                pieces.add(Bitmap.createBitmap(image, posX, posY, pieceWidth, pieceHeight));
-                posX += pieceWidth;
-            }
-            posY += pieceHeight;
-        }
-
-        return pieces;
-    }
 }
