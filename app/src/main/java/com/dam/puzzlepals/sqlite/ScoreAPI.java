@@ -5,8 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.dam.puzzlepals.entities.Score;
-import com.dam.puzzlepals.enums.Levels;
+import com.dam.puzzlepals.models.Score;
+import com.dam.puzzlepals.enums.Level;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,7 +34,7 @@ public class ScoreAPI {
         return adminSQLiteOpenHelper.getWritableDatabase();
     }
 
-    public Score addScore(long score, Levels level) {
+    public Score addScore(long score, Level level) {
         if (score >= 0 && level != null) {
             SQLiteDatabase database = getSqLiteDatabase();
             ContentValues contentValues = new ContentValues();
@@ -53,7 +53,7 @@ public class ScoreAPI {
 
     public ArrayList<Score> getAllScores() {
         SQLiteDatabase database = getSqLiteDatabase();
-        Cursor cursor = database.rawQuery("SELECT * FROM scores ORDER BY time DESC", null);
+        Cursor cursor = database.rawQuery("SELECT * FROM scores ORDER BY date DESC", null);
         ArrayList<Score> scores = new ArrayList<>();
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
@@ -61,7 +61,7 @@ public class ScoreAPI {
                     int id = cursor.getInt(cursor.getColumnIndexOrThrow(ID_COL));
                     Date date = databaseDateFormat.parse(cursor.getString(cursor.getColumnIndexOrThrow(DATE_COL)));
                     long score = cursor.getLong(cursor.getColumnIndexOrThrow(SCORE_COL));
-                    Levels level = Levels.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(LEVEL_COL)));
+                    Level level = Level.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(LEVEL_COL)));
                     scores.add(new Score(id, date, score, level));
                 } catch (IllegalArgumentException | ParseException ignored) {
                 }
@@ -79,10 +79,10 @@ public class ScoreAPI {
         String sentenceSql;
         if (levelReq != null) {
             selectArgs = new String[]{String.valueOf(levelReq), String.valueOf(size)};
-            sentenceSql = "SELECT * FROM scores WHERE level = ? ORDER BY score DESC LIMIT ?";
+            sentenceSql = "SELECT * FROM scores WHERE level = ? ORDER BY score ASC LIMIT ?";
         } else {
             selectArgs = new String[]{String.valueOf(size)};
-            sentenceSql = "SELECT * FROM scores ORDER BY score DESC LIMIT ?";
+            sentenceSql = "SELECT * FROM scores ORDER BY score ASC LIMIT ?";
         }
         Cursor cursor = database.rawQuery(sentenceSql, selectArgs);
         ArrayList<Score> scores = new ArrayList<>();
@@ -92,7 +92,7 @@ public class ScoreAPI {
                     int id = cursor.getInt(cursor.getColumnIndexOrThrow(ID_COL));
                     Date date = databaseDateFormat.parse(cursor.getString(cursor.getColumnIndexOrThrow(DATE_COL)));
                     long score = cursor.getLong(cursor.getColumnIndexOrThrow(SCORE_COL));
-                    Levels level = Levels.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(LEVEL_COL)));
+                    Level level = Level.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(LEVEL_COL)));
                     scores.add(new Score(id, date, score, level));
                 } catch (IllegalArgumentException | ParseException ignored) {
                 }
@@ -115,7 +115,7 @@ public class ScoreAPI {
                     int id = cursor.getInt(cursor.getColumnIndexOrThrow(ID_COL));
                     Date date = databaseDateFormat.parse(cursor.getString(cursor.getColumnIndexOrThrow(DATE_COL)));
                     long score = cursor.getLong(cursor.getColumnIndexOrThrow(SCORE_COL));
-                    Levels level = Levels.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(LEVEL_COL)));
+                    Level level = Level.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(LEVEL_COL)));
                     scoreObj = new Score(id, date, score, level);
                 } catch (IllegalArgumentException | ParseException ignored) {
                 }
@@ -129,7 +129,7 @@ public class ScoreAPI {
         }
     }
 
-    public Score updateScore(int id, Date date, long score, Levels level) {
+    public Score updateScore(int id, Date date, long score, Level level) {
         if (id > 0 && date != null && score >= 0 && level != null) {
             SQLiteDatabase database = getSqLiteDatabase();
             ContentValues contentValues = new ContentValues();

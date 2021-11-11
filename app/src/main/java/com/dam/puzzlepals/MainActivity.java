@@ -9,16 +9,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.dam.puzzlepals.entities.Score;
-import com.dam.puzzlepals.enums.Levels;
+import com.dam.puzzlepals.models.Score;
 import com.dam.puzzlepals.sqlite.ScoreAPI;
 import com.dam.puzzlepals.ui.ScoreListAdapter;
 import com.dam.puzzlepals.ui.SelectImgActivity;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,12 +25,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ScoreAPI scoreAPI = new ScoreAPI(this);
-        // TODO: Check what score will be showed
+        // TODO: To improve top score list view
         ArrayList<Score> betterScores = scoreAPI.getBetterScores(null, 3);
-
-        betterScores.add(new Score(new Date(), 125L, Levels.EASY));
-        betterScores.add(new Score(new Date(), 98L, Levels.MEDIUM));
-        betterScores.add(new Score(new Date(), 134L, Levels.HARD));
 
         if (betterScores.size() > 0) {
             ListView topScoreList = findViewById(R.id.top_score_list);

@@ -1,7 +1,6 @@
 package com.dam.puzzlepals.enums;
 
-public enum Levels {
+public enum Level {
     EASY,
-    MEDIUM,
     HARD
 }

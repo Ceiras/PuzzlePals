@@ -8,7 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.dam.puzzlepals.R;
-import com.dam.puzzlepals.entities.Score;
+import com.dam.puzzlepals.models.Score;
+import com.dam.puzzlepals.utils.TimeConverter;
 
 import java.util.ArrayList;
 
@@ -45,8 +46,8 @@ public class ScoreListAdapter extends BaseAdapter {
         TextView scoreDateTextView = convertView.findViewById(R.id.date_top_score);
         TextView scoreTimeTextView = convertView.findViewById(R.id.time_top_score);
 
-        scoreDateTextView.setText(scoreItem.getStringDate());
-        scoreTimeTextView.setText(scoreItem.getStringScore());
+        scoreDateTextView.setText(TimeConverter.convertDateToCompleteFormatDate(scoreItem.getDate()));
+        scoreTimeTextView.setText(TimeConverter.convertTimeMillisToReadableString(scoreItem.getScore()));
 
         return convertView;
     }

@@ -1,27 +1,25 @@
-package com.dam.puzzlepals.entities;
+package com.dam.puzzlepals.models;
 
 import androidx.annotation.NonNull;
 
-import com.dam.puzzlepals.enums.Levels;
+import com.dam.puzzlepals.enums.Level;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 public class Score {
     private long id;
     private Date date;
     private long score;
-    private Levels level;
+    private Level level;
 
-    public Score(long id, Date date, long score, Levels level) {
+    public Score(long id, Date date, long score, Level level) {
         this.id = id;
         this.date = date;
         this.score = score;
         this.level = level;
     }
 
-    public Score(Date date, long score, Levels level) {
+    public Score(Date date, long score, Level level) {
         this.date = date;
         this.score = score;
         this.level = level;
@@ -39,11 +37,6 @@ public class Score {
         return date;
     }
 
-    public String getStringDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("E, dd/MMM/yyyy HH:mm:ss", Locale.getDefault());
-        return dateFormat.format(date);
-    }
-
     public void setDate(Date date) {
         this.date = date;
     }
@@ -56,15 +49,11 @@ public class Score {
         this.score = score;
     }
 
-    public String getStringScore() {
-        return score + "ms";
-    }
-
-    public Levels getLevel() {
+    public Level getLevel() {
         return level;
     }
 
-    public void setLevel(Levels level) {
+    public void setLevel(Level level) {
         this.level = level;
     }
 

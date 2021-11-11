@@ -5,16 +5,18 @@
       <map>
         <entry key="..\:/projects/PuzzlePals/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.14722222222222223" />
         <entry key="..\:/projects/PuzzlePals/app/src/main/res/drawable/ic_launcher_background.xml" value="0.14722222222222223" />
+        <entry key="..\:/projects/PuzzlePals/app/src/main/res/layout/acitivity_puzzle.xml" value="0.33" />
         <entry key="..\:/projects/PuzzlePals/app/src/main/res/layout/activity_main.xml" value="0.12917933130699089" />
+        <entry key="..\:/projects/PuzzlePals/app/src/main/res/layout/activity_puzzle.xml" value="0.20520833333333333" />
+        <entry key="..\:/projects/PuzzlePals/app/src/main/res/layout/activity_select_img.xml" value="0.22" />
+        <entry key="..\:/projects/PuzzlePals/app/src/main/res/layout/activity_select_level.xml" value="0.22" />
         <entry key="..\:/projects/PuzzlePals/app/src/main/res/layout/activity_welcome.xml" value="0.19791666666666666" />
+        <entry key="..\:/projects/PuzzlePals/app/src/main/res/layout/celda_puzzle_grid_view.xml" value="0.20625" />
+        <entry key="..\:/projects/PuzzlePals/app/src/main/res/layout/congrats_dialogue.xml" value="0.2296195652173913" />
         <entry key="..\:/projects/PuzzlePals/app/src/main/res/layout/list_item_score.xml" value="0.19791666666666666" />
         <entry key="..\:/projects/PuzzlePals/app/src/main/res/menu/menu_action.xml" value="0.2796875" />
         <entry key="app/src/main/res/layout/activity_select_img.xml" value="0.19947916666666668" />
         <entry key="app/src/main/res/layout/activity_select_level.xml" value="0.19947916666666668" />
-        <entry key="app/src/main/res/layout/activity_welcome.xml" value="0.35520833333333335" />
-        <entry key="app/src/main/res/layout/celda_puzzle_grid_view.xml" value="0.35520833333333335" />
-        <entry key="app/src/main/res/layout/congrats_dialogue.xml" value="0.14375" />
-        <entry key="app/src/main/res/layout/fragment_puzzle.xml" value="0.17426545086119555" />
       </map>
     </option>
   </component>
