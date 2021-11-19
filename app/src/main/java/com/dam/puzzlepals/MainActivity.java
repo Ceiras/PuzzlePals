@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dam.puzzlepals.models.Score;
 import com.dam.puzzlepals.sqlite.ScoreAPI;
+import com.dam.puzzlepals.ui.HelpActivity;
 import com.dam.puzzlepals.ui.ScoreListAdapter;
 import com.dam.puzzlepals.ui.SelectImgActivity;
 
@@ -25,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ScoreAPI scoreAPI = new ScoreAPI(this);
-        // TODO: To improve top score list view
         ArrayList<Score> betterScores = scoreAPI.getBetterScores(null, 3);
 
         if (betterScores.size() > 0) {
@@ -57,7 +57,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         int menuItemId = menuItem.getItemId();
 
-        // TODO: Redirection to Help Activity
+        if (menuItemId == R.id.help_item) {
+            Intent helpActivityIntent = new Intent(this, HelpActivity.class);
+            startActivity(helpActivityIntent);
+        }
 
         return super.onOptionsItemSelected(menuItem);
     }

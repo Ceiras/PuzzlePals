@@ -18,4 +18,5 @@
     <string name="select_img">Seleccionar imágen</string>
     <string name="selected_img_description">Imágen seleccionada</string>
     <string name="finish">Finalizar</string>
+    <string name="back">Atrás</string>
 </resources>
