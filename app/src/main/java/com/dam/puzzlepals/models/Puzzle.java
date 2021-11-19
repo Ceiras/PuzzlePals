@@ -85,6 +85,8 @@ public class Puzzle {
     }
 
     public void splitPuzzle() {
+        this.puzzlePieces.clear();
+
         int rows = 1;
         int cols = 1;
 
