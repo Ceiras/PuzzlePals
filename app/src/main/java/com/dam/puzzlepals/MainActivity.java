@@ -69,5 +69,4 @@ public class MainActivity extends AppCompatActivity {
         Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
         startActivity(selectImageActivityIntent);
     }
-
 }
