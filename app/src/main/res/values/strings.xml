@@ -18,4 +18,6 @@
     <string name="selected_img_description">Selected Image</string>
     <string name="finish">Finish</string>
     <string name="back">Back</string>
+    <string name="channel_name">PuzzlePals</string>
+    <string name="channel_description">Nuevo record!</string>
 </resources>
