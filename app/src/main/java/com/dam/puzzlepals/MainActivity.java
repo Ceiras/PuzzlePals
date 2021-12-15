@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dam.puzzlepals.enums.MusicPlayer;
 import com.dam.puzzlepals.models.Score;
 import com.dam.puzzlepals.sqlite.ScoreAPI;
 import com.dam.puzzlepals.ui.HelpActivity;
@@ -44,6 +45,24 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
         finishAffinity();
         System.exit(0);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Intent backgroundMusicService = new Intent(this, BackgroundMusicService.class);
+        backgroundMusicService.setAction(MusicPlayer.PLAY.toString());
+        startService(backgroundMusicService);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Intent backgroundMusicService = new Intent(this, BackgroundMusicService.class);
+        backgroundMusicService.setAction(MusicPlayer.STOP.toString());
+        startService(backgroundMusicService);
     }
 
     // Creates Action Menu

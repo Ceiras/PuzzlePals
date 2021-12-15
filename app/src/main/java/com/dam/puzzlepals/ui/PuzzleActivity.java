@@ -36,7 +36,7 @@ public class PuzzleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.acitivity_puzzle);
+        setContentView(R.layout.activity_puzzle);
 
         PuzzleHolder.getInstance().getPuzzle().splitPuzzle();
         PuzzleHolder.getInstance().getPuzzle().shuffle();
@@ -63,7 +63,7 @@ public class PuzzleActivity extends AppCompatActivity {
         puzzleGridView.setVerticalSpacing(3);
         puzzleGridView.setHorizontalSpacing(3);
 
-        ArrayAdapter gridAdapter = new ArrayAdapter<PuzzlePiece>(PuzzleActivity.this, R.layout.acitivity_puzzle, PuzzleHolder.getInstance().getPuzzle().getShuffledPuzzlePieces()) {
+        ArrayAdapter gridAdapter = new ArrayAdapter<PuzzlePiece>(PuzzleActivity.this, R.layout.activity_puzzle, PuzzleHolder.getInstance().getPuzzle().getShuffledPuzzlePieces()) {
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
