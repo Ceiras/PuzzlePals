@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -64,7 +66,7 @@ public class PuzzleActivity extends AppCompatActivity {
         puzzleGridView.setVerticalSpacing(3);
         puzzleGridView.setHorizontalSpacing(3);
 
-        ArrayAdapter gridAdapter = new ArrayAdapter<PuzzlePiece>(PuzzleActivity.this, R.layout.activity_puzzle, PuzzleHolder.getInstance().getPuzzle().getShuffledPuzzlePieces()) {
+        ArrayAdapter<PuzzlePiece> gridAdapter = new ArrayAdapter<PuzzlePiece>(PuzzleActivity.this, R.layout.activity_puzzle, PuzzleHolder.getInstance().getPuzzle().getShuffledPuzzlePieces()) {
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -85,34 +87,62 @@ public class PuzzleActivity extends AppCompatActivity {
             piecesToExchange.add(position);
             if (piecesToExchange.size() == 2) {
                 exchangePiecesMediaPlayer.start();
-                PuzzleHolder.getInstance().getPuzzle().exchangePieces(piecesToExchange.get(0), piecesToExchange.get(1));
-                gridAdapter.notifyDataSetChanged();
 
-                boolean isComplete = PuzzleHolder.getInstance().getPuzzle().isComplete();
-                if (isComplete) {
-                    PuzzleHolder.getInstance().getPuzzle().finish();
-                    long score = PuzzleHolder.getInstance().getPuzzle().getScore();
-                    Level level = PuzzleHolder.getInstance().getPuzzle().getLevel();
+                View oldPiece = puzzleGridView.getChildAt(piecesToExchange.get(0));
+                View newPiece = puzzleGridView.getChildAt(piecesToExchange.get(1));
 
-                    ScoreAPI scoreApi = new ScoreAPI(PuzzleActivity.this);
-                    scoreApi.addScore(score, level);
+                Animation exchangePieceAnimation = AnimationUtils.loadAnimation(this, R.anim.disappear);
 
-                    final Dialog finishDialog = new Dialog(PuzzleActivity.this, android.R.style.Theme_Black_NoTitleBar);
-                    finishDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
-                    finishDialog.setContentView(R.layout.congrats_dialogue);
-                    finishDialog.setCancelable(true);
-                    finishDialog.show();
+                exchangePieceAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
 
-                    TextView scoreText = (TextView) finishDialog.findViewById(R.id.score_txt);
-                    scoreText.setText(TimeConverter.convertTimeMillisToReadableString(score));
-                    Button finishButton = (Button) finishDialog.findViewById(R.id.finish_btn);
-                    finishButton.setOnClickListener(dialogView -> {
-                        Intent mainActivityIntent = new Intent(this, MainActivity.class);
-                        startActivity(mainActivityIntent);
-                    });
-                } else {
-                    piecesToExchange.clear();
-                }
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        PuzzleHolder.getInstance().getPuzzle().exchangePieces(piecesToExchange.get(0), piecesToExchange.get(1));
+                        gridAdapter.notifyDataSetChanged();
+
+                        boolean isComplete = PuzzleHolder.getInstance().getPuzzle().isComplete();
+                        if (isComplete) {
+                            PuzzleHolder.getInstance().getPuzzle().finish();
+                            long score = PuzzleHolder.getInstance().getPuzzle().getScore();
+                            Level level = PuzzleHolder.getInstance().getPuzzle().getLevel();
+
+                            ScoreAPI scoreApi = new ScoreAPI(PuzzleActivity.this);
+                            scoreApi.addScore(score, level);
+
+                            final Dialog finishDialog = new Dialog(PuzzleActivity.this, android.R.style.Theme_Black_NoTitleBar);
+                            finishDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+                            finishDialog.setContentView(R.layout.congrats_dialogue);
+                            finishDialog.setCancelable(true);
+                            finishDialog.show();
+
+                            TextView scoreText = (TextView) finishDialog.findViewById(R.id.score_txt);
+                            scoreText.setText(TimeConverter.convertTimeMillisToReadableString(score));
+                            Button finishButton = (Button) finishDialog.findViewById(R.id.finish_btn);
+                            finishButton.setOnClickListener(dialogView -> {
+                                Intent mainActivityIntent = new Intent(PuzzleActivity.this, MainActivity.class);
+                                startActivity(mainActivityIntent);
+                            });
+                        } else {
+                            piecesToExchange.clear();
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                oldPiece.startAnimation(exchangePieceAnimation);
+                newPiece.startAnimation(exchangePieceAnimation);
+            } else {
+                Animation selectPieceAnimation = AnimationUtils.loadAnimation(this, R.anim.selected);
+                selectPieceAnimation.setFillAfter(true);
+                view.startAnimation(selectPieceAnimation);
             }
         });
     }
