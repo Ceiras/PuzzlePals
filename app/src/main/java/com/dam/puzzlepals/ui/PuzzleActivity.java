@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,9 +80,11 @@ public class PuzzleActivity extends AppCompatActivity {
         puzzleGridView.setAdapter(gridAdapter);
 
         List<Integer> piecesToExchange = new ArrayList<>();
+        MediaPlayer exchangePiecesMediaPlayer = MediaPlayer.create(this, R.raw.exchange_piece_sound);
         puzzleGridView.setOnItemClickListener((parent, view, position, id) -> {
             piecesToExchange.add(position);
             if (piecesToExchange.size() == 2) {
+                exchangePiecesMediaPlayer.start();
                 PuzzleHolder.getInstance().getPuzzle().exchangePieces(piecesToExchange.get(0), piecesToExchange.get(1));
                 gridAdapter.notifyDataSetChanged();
 
