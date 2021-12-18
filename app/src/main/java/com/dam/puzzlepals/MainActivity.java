@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void phoneCallListener() {
-        TelephonyManager systemService = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        PhoneStateListener listener = new PhoneStateListener() {
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        PhoneStateListener phoneStateListener = new PhoneStateListener() {
             @Override
             public void onCallStateChanged(int state, String phoneNumber) {
                 super.onCallStateChanged(state, phoneNumber);
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 startService(backgroundMusicServiceStopIntent);
             }
         };
-        systemService.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
+        telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     @Override
