@@ -25,4 +25,5 @@
     <string name="error_selecting_song">Error Selecting Song</string>
     <string name="unknown_sogn">Unknown Song</string>
     <string name="loading_song">Loading Song...</string>
+    <string name="mute">Mute</string>
 </resources>

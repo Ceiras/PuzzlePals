@@ -1,13 +1,13 @@
 package com.dam.puzzlepals.ui;
 
 import android.content.Intent;
-import android.location.SettingInjectorService;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
@@ -20,8 +20,8 @@ import androidx.documentfile.provider.DocumentFile;
 import com.dam.puzzlepals.BackgroundMusicService;
 import com.dam.puzzlepals.MainActivity;
 import com.dam.puzzlepals.R;
-import com.dam.puzzlepals.WelcomeActivity;
 import com.dam.puzzlepals.enums.MusicPlayer;
+import com.dam.puzzlepals.holders.PuzzleHolder;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -62,11 +62,34 @@ public class SettingsActivity extends AppCompatActivity {
 
         backgroundMusic = findViewById(R.id.background_music);
         backgroundMusic.setText(R.string.default_music);
+
+        Switch muteSwitch = findViewById(R.id.mute_switch);
+        muteSwitch.setChecked(PuzzleHolder.getInstance().isMute());
     }
 
     public void onClickChangeBackgroundMusic(View view) {
         Intent getMusicIntent = new Intent(Intent.ACTION_GET_CONTENT);
         getMusicIntent.setType("audio/*");
         launcher.launch(getMusicIntent);
+    }
+
+    public void onClickMuteBackgroundMusic(View view) {
+        ProgressBar spinnerMute = findViewById(R.id.loading_mute);
+        spinnerMute.setVisibility(View.VISIBLE);
+
+        boolean isChecked = ((Switch) view).isChecked();
+        Intent backgroundMusicServiceStopIntent = new Intent(SettingsActivity.this, BackgroundMusicService.class);
+        backgroundMusicServiceStopIntent.setAction(isChecked ? MusicPlayer.MUTE.toString() : MusicPlayer.UNMUTE.toString());
+        startService(backgroundMusicServiceStopIntent);
+
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(() -> {
+            spinnerMute.setVisibility(View.INVISIBLE);
+        }, 1800);
+    }
+
+    public void onClickGoBack(View view) {
+        Intent mainActivityIntent = new Intent(this, MainActivity.class);
+        startActivity(mainActivityIntent);
     }
 }

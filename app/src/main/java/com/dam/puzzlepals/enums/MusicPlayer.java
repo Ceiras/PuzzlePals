@@ -4,5 +4,7 @@ public enum MusicPlayer {
     PLAY,
     PAUSE,
     STOP,
-    CHANGE_SONG
+    CHANGE_SONG,
+    MUTE,
+    UNMUTE
 }

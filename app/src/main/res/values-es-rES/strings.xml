@@ -26,4 +26,5 @@
     <string name="error_selecting_song">Error seleccionando la música</string>
     <string name="unknown_sogn">Canción desconocida</string>
     <string name="loading_song">Cargando canción...</string>
+    <string name="mute">Silenciar</string>
 </resources>
