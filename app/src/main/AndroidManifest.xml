@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PuzzlePals" >
 
-        <service android:name=".BackgroundMusicService" />
+        <service android:name=".services.BackgroundMusicService" />
 
         <activity
             android:name=".WelcomeActivity"

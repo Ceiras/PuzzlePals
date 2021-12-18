@@ -1,4 +1,4 @@
-package com.dam.puzzlepals;
+package com.dam.puzzlepals.services;
 
 import android.app.Service;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 
+import com.dam.puzzlepals.R;
 import com.dam.puzzlepals.enums.MusicPlayer;
 import com.dam.puzzlepals.holders.PuzzleHolder;
 
