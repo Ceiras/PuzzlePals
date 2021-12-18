@@ -1,7 +1,10 @@
 package com.dam.puzzlepals;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dam.puzzlepals.enums.MusicPlayer;
 import com.dam.puzzlepals.models.Score;
+import com.dam.puzzlepals.services.BackgroundMusicService;
 import com.dam.puzzlepals.sqlite.ScoreAPI;
 import com.dam.puzzlepals.ui.HelpActivity;
 import com.dam.puzzlepals.ui.ScoreListAdapter;
@@ -27,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        phoneCallListener();
+
         ScoreAPI scoreAPI = new ScoreAPI(this);
         ArrayList<Score> betterScores = scoreAPI.getBetterScores(null, 3);
 
@@ -39,6 +45,24 @@ public class MainActivity extends AppCompatActivity {
             TextView emptyScoreList = findViewById(R.id.empty_score_list);
             emptyScoreList.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void phoneCallListener() {
+        TelephonyManager systemService = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        PhoneStateListener listener = new PhoneStateListener() {
+            @Override
+            public void onCallStateChanged(int state, String phoneNumber) {
+                super.onCallStateChanged(state, phoneNumber);
+                Intent backgroundMusicServiceStopIntent = new Intent(MainActivity.this, BackgroundMusicService.class);
+                if (state == 1) {
+                    backgroundMusicServiceStopIntent.setAction(MusicPlayer.PAUSE.toString());
+                } else {
+                    backgroundMusicServiceStopIntent.setAction(MusicPlayer.PLAY.toString());
+                }
+                startService(backgroundMusicServiceStopIntent);
+            }
+        };
+        systemService.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     @Override
