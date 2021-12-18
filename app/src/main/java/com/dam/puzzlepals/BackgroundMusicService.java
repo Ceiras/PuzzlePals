@@ -35,6 +35,10 @@ public class BackgroundMusicService extends Service {
             pause();
         } else if (action.equals(MusicPlayer.STOP)) {
             stop();
+        } else if (action.equals(MusicPlayer.CHANGE_SONG)) {
+            mediaPlayer = MediaPlayer.create(this, intent.getData());
+            mediaPlayer.setLooping(true);
+            play();
         }
 
         return Service.START_NOT_STICKY;
@@ -42,6 +46,7 @@ public class BackgroundMusicService extends Service {
 
     private void stop() {
         mediaPlayer.stop();
+        mediaPlayer.release();
     }
 
     private void play() {
@@ -55,6 +60,5 @@ public class BackgroundMusicService extends Service {
     @Override
     public void onDestroy() {
         stop();
-        mediaPlayer.release();
     }
 }

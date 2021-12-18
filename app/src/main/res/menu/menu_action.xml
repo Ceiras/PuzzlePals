@@ -5,4 +5,7 @@
     <item
         android:id="@+id/help_item"
         android:title="@string/help" />
+    <item
+        android:id="@+id/settings_item"
+        android:title="@string/settings" />
 </menu>

@@ -31,6 +31,9 @@
             android:name=".ui.HelpActivity"
             android:exported="true" />
         <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.SelectImgActivity"
             android:exported="true" />
         <activity

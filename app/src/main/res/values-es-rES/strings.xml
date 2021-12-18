@@ -19,4 +19,11 @@
     <string name="selected_img_description">Imágen seleccionada</string>
     <string name="finish">Finalizar</string>
     <string name="back">Atrás</string>
+    <string name="settings">Configuración</string>
+    <string name="background_music">Música de fondo</string>
+    <string name="change_background_music">Cambiar música de fondo</string>
+    <string name="default_music">Por defecto</string>
+    <string name="error_selecting_song">Error seleccionando la música</string>
+    <string name="unknown_sogn">Canción desconocida</string>
+    <string name="loading_song">Cargando canción...</string>
 </resources>

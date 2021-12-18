@@ -16,6 +16,7 @@ import com.dam.puzzlepals.sqlite.ScoreAPI;
 import com.dam.puzzlepals.ui.HelpActivity;
 import com.dam.puzzlepals.ui.ScoreListAdapter;
 import com.dam.puzzlepals.ui.SelectImgActivity;
+import com.dam.puzzlepals.ui.SettingsActivity;
 
 import java.util.ArrayList;
 
@@ -72,13 +73,16 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    // Assign function to Action Menu options
+    // Assign activity to Action Menu options
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         int menuItemId = menuItem.getItemId();
 
         if (menuItemId == R.id.help_item) {
             Intent helpActivityIntent = new Intent(this, HelpActivity.class);
             startActivity(helpActivityIntent);
+        } else if (menuItemId == R.id.settings_item) {
+            Intent settingsActivityIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsActivityIntent);
         }
 
         return super.onOptionsItemSelected(menuItem);
