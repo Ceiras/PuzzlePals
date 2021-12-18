@@ -17,11 +17,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.documentfile.provider.DocumentFile;
 
-import com.dam.puzzlepals.BackgroundMusicService;
 import com.dam.puzzlepals.MainActivity;
 import com.dam.puzzlepals.R;
 import com.dam.puzzlepals.enums.MusicPlayer;
 import com.dam.puzzlepals.holders.PuzzleHolder;
+import com.dam.puzzlepals.services.BackgroundMusicService;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -46,6 +46,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(() -> {
                     DocumentFile documentFileSong = DocumentFile.fromSingleUri(SettingsActivity.this, songPath);
+                    PuzzleHolder.getInstance().setBackgroundSongName(documentFileSong.getName());
                     String songFilename = documentFileSong != null ? documentFileSong.getName() : String.valueOf(R.string.unknown_sogn);
                     backgroundMusic.setText(songFilename);
                 }, 2000);
@@ -61,7 +62,11 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         backgroundMusic = findViewById(R.id.background_music);
-        backgroundMusic.setText(R.string.default_music);
+        if (PuzzleHolder.getInstance().getBackgroundSongName().equals("")) {
+            backgroundMusic.setText(R.string.default_music);
+        } else {
+            backgroundMusic.setText(PuzzleHolder.getInstance().getBackgroundSongName());
+        }
 
         Switch muteSwitch = findViewById(R.id.mute_switch);
         muteSwitch.setChecked(PuzzleHolder.getInstance().isMute());
