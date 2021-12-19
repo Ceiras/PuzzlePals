@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".ui.SelectImgActivity">
 
+    <Button
+        android:id="@+id/select_img_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="loadImageFromGallery"
+        android:text="@string/select_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/selected_img_view"
         android:layout_width="0dp"
@@ -20,7 +34,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/select_img_button"
         tools:ignore="ImageContrastCheck,RedundantDescriptionCheck"
         tools:src="@tools:sample/avatars" />
 
@@ -44,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:clickable="true"
+        android:clickable="false"
         android:focusable="true"
         android:onClick="chooseLevel"
         android:text="@string/next"
