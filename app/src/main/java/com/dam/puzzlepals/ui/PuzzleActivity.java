@@ -7,10 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -42,7 +45,7 @@ public class PuzzleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.acitivity_puzzle);
+        setContentView(R.layout.activity_puzzle);
 
         PuzzleHolder.getInstance().getPuzzle().splitPuzzle();
         PuzzleHolder.getInstance().getPuzzle().shuffle();
@@ -69,7 +72,7 @@ public class PuzzleActivity extends AppCompatActivity {
         puzzleGridView.setVerticalSpacing(3);
         puzzleGridView.setHorizontalSpacing(3);
 
-        ArrayAdapter gridAdapter = new ArrayAdapter<PuzzlePiece>(PuzzleActivity.this, R.layout.acitivity_puzzle, PuzzleHolder.getInstance().getPuzzle().getShuffledPuzzlePieces()) {
+        ArrayAdapter<PuzzlePiece> gridAdapter = new ArrayAdapter<PuzzlePiece>(PuzzleActivity.this, R.layout.activity_puzzle, PuzzleHolder.getInstance().getPuzzle().getShuffledPuzzlePieces()) {
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -85,58 +88,80 @@ public class PuzzleActivity extends AppCompatActivity {
         puzzleGridView.setAdapter(gridAdapter);
 
         List<Integer> piecesToExchange = new ArrayList<>();
+        MediaPlayer exchangePiecesMediaPlayer = MediaPlayer.create(this, R.raw.exchange_piece_sound);
         puzzleGridView.setOnItemClickListener((parent, view, position, id) -> {
             piecesToExchange.add(position);
             if (piecesToExchange.size() == 2) {
-                PuzzleHolder.getInstance().getPuzzle().exchangePieces(piecesToExchange.get(0), piecesToExchange.get(1));
-                gridAdapter.notifyDataSetChanged();
+                exchangePiecesMediaPlayer.start();
 
-                boolean isComplete = PuzzleHolder.getInstance().getPuzzle().isComplete();
-                if (isComplete) {
-                    PuzzleHolder.getInstance().getPuzzle().finish();
-                    long score = PuzzleHolder.getInstance().getPuzzle().getScore();
-                    Level level = PuzzleHolder.getInstance().getPuzzle().getLevel();
+                View oldPiece = puzzleGridView.getChildAt(piecesToExchange.get(0));
+                View newPiece = puzzleGridView.getChildAt(piecesToExchange.get(1));
 
-                    ScoreAPI scoreApi = new ScoreAPI(PuzzleActivity.this);
-                    scoreApi.addScore(score, level);
+                Animation exchangePieceAnimation = AnimationUtils.loadAnimation(this, R.anim.disappear);
 
-                    CalendarManager calendar = new CalendarManager(PuzzleActivity.this);
-                    managePermissions(calendar, Manifest.permission.READ_CALENDAR);
-                    managePermissions(calendar, Manifest.permission.WRITE_CALENDAR);
+                exchangePieceAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
 
-                    //calendar.addEvent(PuzzleActivity.this);
-                    calendar.addRecordEvenToCalendar(PuzzleActivity.this, level, score , TimeConverter.convertTimeMillisToReadableString(score));
+                    }
 
-                    final Dialog finishDialog = new Dialog(PuzzleActivity.this, android.R.style.Theme_Black_NoTitleBar);
-                    finishDialog.dismiss();
-                    finishDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
-                    finishDialog.setContentView(R.layout.congrats_dialogue);
-                    finishDialog.setCancelable(true);
-                    finishDialog.show();
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        PuzzleHolder.getInstance().getPuzzle().exchangePieces(piecesToExchange.get(0), piecesToExchange.get(1));
+                        gridAdapter.notifyDataSetChanged();
 
-                    TextView scoreText = (TextView) finishDialog.findViewById(R.id.score_txt);
-                    scoreText.setText(TimeConverter.convertTimeMillisToReadableString(score));
-                    Button finishButton = (Button) finishDialog.findViewById(R.id.finish_btn);
-                    finishButton.setOnClickListener(dialogView -> {
-                        Intent mainActivityIntent = new Intent(this, MainActivity.class);
-                        startActivity(mainActivityIntent);
-                    });
+                        boolean isComplete = PuzzleHolder.getInstance().getPuzzle().isComplete();
+                        if (isComplete) {
+                            PuzzleHolder.getInstance().getPuzzle().finish();
+                            long score = PuzzleHolder.getInstance().getPuzzle().getScore();
+                            Level level = PuzzleHolder.getInstance().getPuzzle().getLevel();
 
-                    //managePermissions(calendar, "WRITE_CALENDAR");
+                            ScoreAPI scoreApi = new ScoreAPI(PuzzleActivity.this);
+                            scoreApi.addScore(score, level);
 
-                    //calendar.getCalendars(PuzzleActivity.this);
+                            CalendarManager calendar = new CalendarManager(PuzzleActivity.this);
+                            managePermissions(calendar, Manifest.permission.READ_CALENDAR);
+                            managePermissions(calendar, Manifest.permission.WRITE_CALENDAR);
+                            calendar.addRecordEvenToCalendar(PuzzleActivity.this, level, score, TimeConverter.convertTimeMillisToReadableString(score));
 
-                } else {
-                    piecesToExchange.clear();
-                }
+                            final Dialog finishDialog = new Dialog(PuzzleActivity.this, android.R.style.Theme_Black_NoTitleBar);
+                            finishDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+                            finishDialog.setContentView(R.layout.congrats_dialogue);
+                            finishDialog.setCancelable(true);
+                            finishDialog.show();
+
+                            TextView scoreText = (TextView) finishDialog.findViewById(R.id.score_txt);
+                            scoreText.setText(TimeConverter.convertTimeMillisToReadableString(score));
+                            Button finishButton = (Button) finishDialog.findViewById(R.id.finish_btn);
+                            finishButton.setOnClickListener(dialogView -> {
+                                Intent mainActivityIntent = new Intent(PuzzleActivity.this, MainActivity.class);
+                                startActivity(mainActivityIntent);
+                            });
+                        } else {
+                            piecesToExchange.clear();
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                oldPiece.startAnimation(exchangePieceAnimation);
+                newPiece.startAnimation(exchangePieceAnimation);
+            } else {
+                Animation selectPieceAnimation = AnimationUtils.loadAnimation(this, R.anim.selected);
+                selectPieceAnimation.setFillAfter(true);
+                view.startAnimation(selectPieceAnimation);
             }
         });
     }
 
     //With this code the app comprobe if the user has given permissions to use the calendar's user.
-    public void managePermissions(CalendarManager calendar, String permission){
-        boolean result = calendar.checkPermissions(PuzzleActivity.this,permission);
-        if(!result){
+    public void managePermissions(CalendarManager calendar, String permission) {
+        boolean result = calendar.checkPermissions(PuzzleActivity.this, permission);
+        if (!result) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     permission)) {
 
@@ -147,7 +172,7 @@ public class PuzzleActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ActivityCompat.requestPermissions(PuzzleActivity.this,
-                                        new String[] {Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_PERMISSION_CODE);
+                                        new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_PERMISSION_CODE);
                             }
                         })
                         .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -160,7 +185,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
             } else {
                 ActivityCompat.requestPermissions(this,
-                    new String[] {Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_PERMISSION_CODE);
+                        new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_PERMISSION_CODE);
             }
         }
     }

@@ -1,25 +1,31 @@
 package com.dam.puzzlepals;
 
 import android.Manifest;
-import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.dam.puzzlepals.calendar.CalendarManager;
+import com.dam.puzzlepals.enums.MusicPlayer;
 import com.dam.puzzlepals.models.Score;
+import com.dam.puzzlepals.services.BackgroundMusicService;
 import com.dam.puzzlepals.sqlite.ScoreAPI;
 import com.dam.puzzlepals.ui.HelpActivity;
 import com.dam.puzzlepals.ui.ScoreListAdapter;
 import com.dam.puzzlepals.ui.SelectImgActivity;
+import com.dam.puzzlepals.ui.SettingsActivity;
 
 import java.util.ArrayList;
 
@@ -31,11 +37,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        phoneCallListener();
+
         ScoreAPI scoreAPI = new ScoreAPI(this);
         CalendarManager calendar = new CalendarManager(MainActivity.this);
         //ArrayList<Score> betterScores = scoreAPI.getBetterScores(null, 3);
         ArrayList<Score> betterScores = calendar.obtenerPuntuaciones(MainActivity.this);
-        managePermissions(calendar,"WRITE_CALENDAR");
+        managePermissions(calendar, "WRITE_CALENDAR");
         //calendar.obtenerPuntuaciones(MainActivity.this);
 
         if (betterScores.size() > 0) {
@@ -49,11 +57,47 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void phoneCallListener() {
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        PhoneStateListener phoneStateListener = new PhoneStateListener() {
+            @Override
+            public void onCallStateChanged(int state, String phoneNumber) {
+                super.onCallStateChanged(state, phoneNumber);
+                Intent backgroundMusicServiceStopIntent = new Intent(MainActivity.this, BackgroundMusicService.class);
+                if (state == 1) {
+                    backgroundMusicServiceStopIntent.setAction(MusicPlayer.PAUSE.toString());
+                } else {
+                    backgroundMusicServiceStopIntent.setAction(MusicPlayer.PLAY.toString());
+                }
+                startService(backgroundMusicServiceStopIntent);
+            }
+        };
+        telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finishAffinity();
         System.exit(0);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Intent backgroundMusicService = new Intent(this, BackgroundMusicService.class);
+        backgroundMusicService.setAction(MusicPlayer.PLAY.toString());
+        startService(backgroundMusicService);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Intent backgroundMusicService = new Intent(this, BackgroundMusicService.class);
+        backgroundMusicService.setAction(MusicPlayer.STOP.toString());
+        startService(backgroundMusicService);
     }
 
     // Creates Action Menu
@@ -63,13 +107,16 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    // Assign function to Action Menu options
+    // Assign activity to Action Menu options
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         int menuItemId = menuItem.getItemId();
 
         if (menuItemId == R.id.help_item) {
             Intent helpActivityIntent = new Intent(this, HelpActivity.class);
             startActivity(helpActivityIntent);
+        } else if (menuItemId == R.id.settings_item) {
+            Intent settingsActivityIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsActivityIntent);
         }
 
         return super.onOptionsItemSelected(menuItem);
@@ -80,9 +127,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(selectImageActivityIntent);
     }
 
-    public void managePermissions(CalendarManager calendar, String permission){
-        boolean result = calendar.checkPermissions(MainActivity.this,permission);
-        if(!result){
+    public void managePermissions(CalendarManager calendar, String permission) {
+        boolean result = calendar.checkPermissions(MainActivity.this, permission);
+        if (!result) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     permission)) {
 
@@ -93,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[] {Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_PERMISSION_CODE);
+                                        new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_PERMISSION_CODE);
                             }
                         })
                         .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -106,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
             } else {
                 ActivityCompat.requestPermissions(this,
-                        new String[] {Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_PERMISSION_CODE);
+                        new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_PERMISSION_CODE);
             }
         }
     }
