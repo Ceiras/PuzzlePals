@@ -46,8 +46,13 @@ public class SettingsActivity extends AppCompatActivity {
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(() -> {
                     DocumentFile documentFileSong = DocumentFile.fromSingleUri(SettingsActivity.this, songPath);
-                    PuzzleHolder.getInstance().setBackgroundSongName(documentFileSong.getName());
-                    String songFilename = documentFileSong != null ? documentFileSong.getName() : String.valueOf(R.string.unknown_song);
+                    String songFilename;
+                    if (documentFileSong != null) {
+                        PuzzleHolder.getInstance().setBackgroundSongName(documentFileSong.getName());
+                        songFilename = documentFileSong.getName();
+                    } else {
+                        songFilename = SettingsActivity.this.getString(R.string.unknown_song);
+                    }
                     backgroundMusic.setText(songFilename);
                 }, 2000);
             } else {

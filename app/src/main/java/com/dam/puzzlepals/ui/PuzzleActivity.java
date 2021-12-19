@@ -40,7 +40,7 @@ import java.util.List;
 
 public class PuzzleActivity extends AppCompatActivity {
 
-    private int CALENDAR_PERMISSION_CODE = 1;
+    private final int CALENDAR_PERMISSION_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,21 +158,25 @@ public class PuzzleActivity extends AppCompatActivity {
         });
     }
 
-    //With this code the app comprobe if the user has given permissions to use the calendar's user.
+    // With this code the app check if the user has given permissions to use the calendar's user.
     public void managePermissions(CalendarManager calendar, String permission) {
         boolean result = calendar.checkPermissions(PuzzleActivity.this, permission);
         if (!result) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    permission)) {
-
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
                 new AlertDialog.Builder(this)
                         .setTitle("Permission needed")
                         .setMessage("This permission is needed because of this and that")
                         .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(PuzzleActivity.this,
-                                        new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_PERMISSION_CODE);
+                                ActivityCompat.requestPermissions(
+                                        PuzzleActivity.this,
+                                        new String[]{
+                                                Manifest.permission.READ_CALENDAR,
+                                                Manifest.permission.WRITE_CALENDAR
+                                        },
+                                        CALENDAR_PERMISSION_CODE
+                                );
                             }
                         })
                         .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -184,8 +188,14 @@ public class PuzzleActivity extends AppCompatActivity {
                         .create().show();
 
             } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_PERMISSION_CODE);
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{
+                                Manifest.permission.READ_CALENDAR,
+                                Manifest.permission.WRITE_CALENDAR
+                        },
+                        CALENDAR_PERMISSION_CODE
+                );
             }
         }
     }

@@ -28,4 +28,13 @@
     <string name="unknown_song">Unknown Song</string>
     <string name="loading_song">Loading Song...</string>
     <string name="mute">Mute</string>
+    <string name="calendar_permission_required">Calendar Permission Required</string>
+    <string name="calendar_permission_required_description">The Calendar permission is required to save the better scores as an important event</string>
+    <string name="agree">Agree</string>
+    <string name="cancel">Cancel</string>
+    <string name="puzzlepals_record">PuzzlePals Record</string>
+    <string name="new_record">New Record</string>
+    <string name="new_record_control_flag">¡New record:</string>
+    <string name="new_record_with_score">New Record: %1$s!</string>
+    <string name="new_record_with_score_and_level">New Record: %1$s, Level %2$s</string>
 </resources>

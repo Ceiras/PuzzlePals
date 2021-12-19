@@ -30,7 +30,8 @@ import com.dam.puzzlepals.ui.SettingsActivity;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private int CALENDAR_PERMISSION_CODE = 1;
+
+    private final int CALENDAR_PERMISSION_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +41,10 @@ public class MainActivity extends AppCompatActivity {
         phoneCallListener();
 
         ScoreAPI scoreAPI = new ScoreAPI(this);
+        ArrayList<Score> betterScores = scoreAPI.getBetterScores(null, 3);
+
         CalendarManager calendar = new CalendarManager(MainActivity.this);
-        //ArrayList<Score> betterScores = scoreAPI.getBetterScores(null, 3);
-        ArrayList<Score> betterScores = calendar.obtenerPuntuaciones(MainActivity.this);
         managePermissions(calendar, "WRITE_CALENDAR");
-        //calendar.obtenerPuntuaciones(MainActivity.this);
 
         if (betterScores.size() > 0) {
             ListView topScoreList = findViewById(R.id.top_score_list);
@@ -130,20 +130,24 @@ public class MainActivity extends AppCompatActivity {
     public void managePermissions(CalendarManager calendar, String permission) {
         boolean result = calendar.checkPermissions(MainActivity.this, permission);
         if (!result) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    permission)) {
-
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
                 new AlertDialog.Builder(this)
-                        .setTitle("Permission needed")
-                        .setMessage("This permission is needed because of this and that")
-                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        .setTitle(R.string.calendar_permission_required)
+                        .setMessage(R.string.calendar_permission_required_description)
+                        .setPositiveButton(R.string.agree, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_PERMISSION_CODE);
+                                ActivityCompat.requestPermissions(
+                                        MainActivity.this,
+                                        new String[]{
+                                                Manifest.permission.READ_CALENDAR,
+                                                Manifest.permission.WRITE_CALENDAR
+                                        },
+                                        CALENDAR_PERMISSION_CODE
+                                );
                             }
                         })
-                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -152,8 +156,14 @@ public class MainActivity extends AppCompatActivity {
                         .create().show();
 
             } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_PERMISSION_CODE);
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{
+                                Manifest.permission.READ_CALENDAR,
+                                Manifest.permission.WRITE_CALENDAR
+                        },
+                        CALENDAR_PERMISSION_CODE
+                );
             }
         }
     }

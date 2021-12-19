@@ -29,4 +29,13 @@
     <string name="unknown_song">Canción desconocida</string>
     <string name="loading_song">Cargando canción...</string>
     <string name="mute">Silenciar</string>
+    <string name="calendar_permission_required">Solicitud de permisos de Calendario</string>
+    <string name="calendar_permission_required_description">Los permisos de Calendario son necesarios para almacenar las mejores puntuaciones como eventos importantes</string>
+    <string name="agree">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="puzzlepals_record">Récord de PuzzlePals</string>
+    <string name="new_record">Nuevo récord</string>
+    <string name="new_record_control_flag">¡Nuevo récord:</string>
+    <string name="new_record_with_score">¡Nuevo récord: %1$s!</string>
+    <string name="new_record_with_score_and_level">Nuevo récord: %1$s, Nivel %2$s</string>
 </resources>
