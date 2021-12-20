@@ -1,9 +1,7 @@
 package com.dam.puzzlepals.ui;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -23,7 +21,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import com.dam.puzzlepals.MainActivity;
 import com.dam.puzzlepals.R;
@@ -32,15 +29,13 @@ import com.dam.puzzlepals.enums.Level;
 import com.dam.puzzlepals.holders.PuzzleHolder;
 import com.dam.puzzlepals.models.PuzzlePiece;
 import com.dam.puzzlepals.sqlite.ScoreAPI;
+import com.dam.puzzlepals.utils.PermissionManger;
 import com.dam.puzzlepals.utils.TimeConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class PuzzleActivity extends AppCompatActivity {
-
-    private final int CALENDAR_PERMISSION_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,9 +115,10 @@ public class PuzzleActivity extends AppCompatActivity {
                             scoreApi.addScore(score, level);
 
                             CalendarManager calendar = new CalendarManager(PuzzleActivity.this);
-                            managePermissions(calendar, Manifest.permission.READ_CALENDAR);
-                            managePermissions(calendar, Manifest.permission.WRITE_CALENDAR);
-                            calendar.addRecordEvenToCalendar(PuzzleActivity.this, level, score, TimeConverter.convertTimeMillisToReadableString(score));
+                            PermissionManger.managePermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.READ_CALENDAR);
+                            PermissionManger.managePermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.WRITE_CALENDAR);
+                            calendar.addRecordEventToCalendar(PuzzleActivity.this, level, TimeConverter.convertTimeMillisToReadableString(score));
+                            calendar.createNotification(PuzzleActivity.this, TimeConverter.convertTimeMillisToReadableString(score));
 
                             final Dialog finishDialog = new Dialog(PuzzleActivity.this, android.R.style.Theme_Black_NoTitleBar);
                             finishDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
@@ -156,48 +152,6 @@ public class PuzzleActivity extends AppCompatActivity {
                 view.startAnimation(selectPieceAnimation);
             }
         });
-    }
-
-    // With this code the app check if the user has given permissions to use the calendar's user.
-    public void managePermissions(CalendarManager calendar, String permission) {
-        boolean result = calendar.checkPermissions(PuzzleActivity.this, permission);
-        if (!result) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                new AlertDialog.Builder(this)
-                        .setTitle("Permission needed")
-                        .setMessage("This permission is needed because of this and that")
-                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(
-                                        PuzzleActivity.this,
-                                        new String[]{
-                                                Manifest.permission.READ_CALENDAR,
-                                                Manifest.permission.WRITE_CALENDAR
-                                        },
-                                        CALENDAR_PERMISSION_CODE
-                                );
-                            }
-                        })
-                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create().show();
-
-            } else {
-                ActivityCompat.requestPermissions(
-                        this,
-                        new String[]{
-                                Manifest.permission.READ_CALENDAR,
-                                Manifest.permission.WRITE_CALENDAR
-                        },
-                        CALENDAR_PERMISSION_CODE
-                );
-            }
-        }
     }
 
 }
