@@ -30,6 +30,8 @@
     <string name="mute">Mute</string>
     <string name="calendar_permission_required">Calendar Permission Required</string>
     <string name="calendar_permission_required_description">The Calendar permission is required to save the better scores as an important event</string>
+    <string name="storage_permission_required">Storage Permission Required</string>
+    <string name="storage_permission_required_description">The Storage permission is required to retrieve images to build the puzzles</string>
     <string name="agree">Agree</string>
     <string name="cancel">Cancel</string>
     <string name="puzzlepals_record">PuzzlePals Record</string>

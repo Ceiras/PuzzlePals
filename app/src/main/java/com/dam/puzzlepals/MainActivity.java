@@ -20,6 +20,7 @@ import com.dam.puzzlepals.models.Score;
 import com.dam.puzzlepals.services.BackgroundMusicService;
 import com.dam.puzzlepals.sqlite.ScoreAPI;
 import com.dam.puzzlepals.ui.HelpActivity;
+import com.dam.puzzlepals.ui.PuzzleActivity;
 import com.dam.puzzlepals.ui.ScoreListAdapter;
 import com.dam.puzzlepals.ui.SelectImgActivity;
 import com.dam.puzzlepals.ui.SettingsActivity;
@@ -40,7 +41,10 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Score> betterScores = scoreAPI.getBetterScores(null, 3);
 
         CalendarManager calendar = new CalendarManager(MainActivity.this);
-        PermissionManger.managePermissions(MainActivity.this, this, calendar, Manifest.permission.WRITE_CALENDAR);
+        PermissionManger.manageCalendarPermissions(MainActivity.this, MainActivity.this, calendar, Manifest.permission.READ_CALENDAR);
+        PermissionManger.manageCalendarPermissions(MainActivity.this, this, calendar, Manifest.permission.WRITE_CALENDAR);
+
+        PermissionManger.manageStoragePermissions(MainActivity.this, MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
         if (betterScores.size() > 0) {
             ListView topScoreList = findViewById(R.id.top_score_list);

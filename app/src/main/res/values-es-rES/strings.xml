@@ -39,4 +39,6 @@
     <string name="new_record_with_score">¡Nuevo récord: %1$s!</string>
     <string name="new_record_with_score_and_level">Nuevo récord: %1$s, Nivel %2$s</string>
     <string name="camera">Cámara</string>
+    <string name="storage_permission_required">Solicitud de permisos de Almacenamiento</string>
+    <string name="storage_permission_required_description">Los permisos de Almacenamiento son necesarios para recuperar las imágenes para construir los puzzles</string>
 </resources>

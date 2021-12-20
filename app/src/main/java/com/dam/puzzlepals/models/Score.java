@@ -1,7 +1,5 @@
 package com.dam.puzzlepals.models;
 
-import androidx.annotation.NonNull;
-
 import com.dam.puzzlepals.enums.Level;
 
 import java.util.Date;
@@ -11,15 +9,18 @@ public class Score {
     private Date date;
     private long score;
     private Level level;
+    private String image;
 
-    public Score(long id, Date date, long score, Level level) {
+    public Score(long id, Date date, long score, Level level, String image) {
         this.id = id;
         this.date = date;
         this.score = score;
         this.level = level;
+        this.image = image;
     }
 
-    public Score(Date date, long score, Level level) {
+    public Score(long id, Date date, long score, Level level) {
+        this.id = id;
         this.date = date;
         this.score = score;
         this.level = level;
@@ -57,7 +58,14 @@ public class Score {
         this.level = level;
     }
 
-    @NonNull
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @Override
     public String toString() {
         return "Score{" +
@@ -65,6 +73,7 @@ public class Score {
                 ", date=" + date +
                 ", score=" + score +
                 ", level=" + level +
+                ", image='" + image + '\'' +
                 '}';
     }
 }

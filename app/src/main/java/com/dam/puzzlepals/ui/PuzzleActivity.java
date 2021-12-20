@@ -29,6 +29,7 @@ import com.dam.puzzlepals.enums.Level;
 import com.dam.puzzlepals.holders.PuzzleHolder;
 import com.dam.puzzlepals.models.PuzzlePiece;
 import com.dam.puzzlepals.sqlite.ScoreAPI;
+import com.dam.puzzlepals.utils.GalleryManager;
 import com.dam.puzzlepals.utils.PermissionManger;
 import com.dam.puzzlepals.utils.TimeConverter;
 
@@ -110,13 +111,14 @@ public class PuzzleActivity extends AppCompatActivity {
                             PuzzleHolder.getInstance().getPuzzle().finish();
                             long score = PuzzleHolder.getInstance().getPuzzle().getScore();
                             Level level = PuzzleHolder.getInstance().getPuzzle().getLevel();
+                            String image = GalleryManager.bitmapToBase64(PuzzleHolder.getInstance().getPuzzle().getImage());
 
                             ScoreAPI scoreApi = new ScoreAPI(PuzzleActivity.this);
-                            scoreApi.addScore(score, level);
+                            scoreApi.addScore(score, level, image);
 
                             CalendarManager calendar = new CalendarManager(PuzzleActivity.this);
-                            PermissionManger.managePermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.READ_CALENDAR);
-                            PermissionManger.managePermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.WRITE_CALENDAR);
+                            PermissionManger.manageCalendarPermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.READ_CALENDAR);
+                            PermissionManger.manageCalendarPermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.WRITE_CALENDAR);
                             calendar.addRecordEventToCalendar(PuzzleActivity.this, level, TimeConverter.convertTimeMillisToReadableString(score));
                             calendar.createNotification(PuzzleActivity.this, TimeConverter.convertTimeMillisToReadableString(score));
 
