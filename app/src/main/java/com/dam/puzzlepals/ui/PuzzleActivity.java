@@ -78,7 +78,7 @@ public class PuzzleActivity extends AppCompatActivity {
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View cell = LayoutInflater.from(PuzzleActivity.this).inflate(R.layout.celda_puzzle_grid_view, parent, false);
                 ImageView cellImage = cell.findViewById(R.id.celda_puzzle_imagen);
-                PuzzlePiece puzzlePiece = (PuzzlePiece) getItem(position);
+                PuzzlePiece puzzlePiece = getItem(position);
                 cellImage.setImageBitmap(puzzlePiece.getBitmap());
 
                 return cell;

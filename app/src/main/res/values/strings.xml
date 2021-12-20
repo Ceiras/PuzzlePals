@@ -37,4 +37,5 @@
     <string name="new_record_control_flag">¡New record:</string>
     <string name="new_record_with_score">New Record: %1$s!</string>
     <string name="new_record_with_score_and_level">New Record: %1$s, Level %2$s</string>
+    <string name="camera">Camera</string>
 </resources>
