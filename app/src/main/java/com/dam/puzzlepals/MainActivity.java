@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.dam.puzzlepals.calendar.CalendarManager;
+import com.dam.puzzlepals.utils.CalendarManager;
 import com.dam.puzzlepals.enums.MusicPlayer;
 import com.dam.puzzlepals.models.Score;
 import com.dam.puzzlepals.services.BackgroundMusicService;

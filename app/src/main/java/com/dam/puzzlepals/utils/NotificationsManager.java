@@ -1,62 +1,28 @@
-package com.dam.puzzlepals.calendar;
+package com.dam.puzzlepals.utils;
 
 import static androidx.core.content.ContextCompat.getSystemService;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
-import android.provider.CalendarContract;
 
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.dam.puzzlepals.R;
 import com.dam.puzzlepals.ScoreActivity;
-import com.dam.puzzlepals.enums.Level;
 import com.dam.puzzlepals.models.Score;
-import com.dam.puzzlepals.utils.TimeConverter;
+import com.dam.puzzlepals.sqlite.ScoreAPI;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
-public class CalendarManager {
+public class NotificationsManager {
 
-    ContentResolver contentResolver;
-
-    public CalendarManager(Context ctx) {
-        contentResolver = ctx.getContentResolver();
-    }
-
-    public boolean checkPermissions(Context applicationContext, String permission) {
-        return applicationContext.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    public void addRecordEventToCalendar(Activity activity, Level level, String score) {
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
-            long currentTime = System.currentTimeMillis();
-
-            ContentValues values = new ContentValues();
-            values.put(CalendarContract.Events.DTSTART, currentTime);
-            values.put(CalendarContract.Events.DTEND, currentTime);
-            values.put(CalendarContract.Events.TITLE, activity.getString(R.string.new_record_with_score_and_level, score, level));
-            values.put(CalendarContract.Events.DESCRIPTION, activity.getString(R.string.puzzlepals_record));
-            values.put(CalendarContract.Events.CALENDAR_ID, 3);
-            values.put(CalendarContract.Events.EVENT_TIMEZONE, "Europe/Madrid");
-
-            ContentResolver contentResolver = activity.getContentResolver();
-            contentResolver.insert(CalendarContract.Events.CONTENT_URI, values);
-        }
-    }
-
-    public void createNotification(Context context, Score score, String path) {
+    public static void createNotification(Context context, Score score, String path) {
         CharSequence name = context.getResources().getString(R.string.channel_name);
         String description = context.getResources().getString(R.string.channel_description);
         int importance = NotificationManager.IMPORTANCE_HIGH;
@@ -83,6 +49,18 @@ public class CalendarManager {
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
 
         notificationManagerCompat.notify(1, builder.build());
+    }
+
+    public static boolean isRecord(Context context, long score) {
+        ScoreAPI scoreAPI = new ScoreAPI(context);
+        ArrayList<Score> betterScores = scoreAPI.getBetterScores(null, 1);
+        Score bestScore = betterScores.size() >= 1 ? betterScores.get(0) : null;
+
+        boolean isRecord = bestScore == null;
+        if (bestScore != null && score < bestScore.getScore()) {
+            isRecord = true;
+        }
+        return isRecord;
     }
 
 }

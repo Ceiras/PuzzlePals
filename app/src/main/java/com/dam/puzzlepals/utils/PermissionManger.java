@@ -9,7 +9,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
 import com.dam.puzzlepals.R;
-import com.dam.puzzlepals.calendar.CalendarManager;
 
 public class PermissionManger {
 
