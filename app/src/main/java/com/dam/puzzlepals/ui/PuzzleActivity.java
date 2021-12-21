@@ -28,6 +28,7 @@ import com.dam.puzzlepals.calendar.CalendarManager;
 import com.dam.puzzlepals.enums.Level;
 import com.dam.puzzlepals.holders.PuzzleHolder;
 import com.dam.puzzlepals.models.PuzzlePiece;
+import com.dam.puzzlepals.models.Score;
 import com.dam.puzzlepals.sqlite.ScoreAPI;
 import com.dam.puzzlepals.utils.GalleryManager;
 import com.dam.puzzlepals.utils.PermissionManger;
@@ -133,13 +134,13 @@ public class PuzzleActivity extends AppCompatActivity {
                                             String image = GalleryManager.bitmapToBase64(PuzzleHolder.getInstance().getPuzzle().getImage());
 
                                             ScoreAPI scoreApi = new ScoreAPI(PuzzleActivity.this);
-                                            scoreApi.addScore(score, level, image);
+                                            Score scorePuzzle = scoreApi.addScore(score, level, image);
 
                                             CalendarManager calendar = new CalendarManager(PuzzleActivity.this);
                                             PermissionManger.manageCalendarPermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.READ_CALENDAR);
                                             PermissionManger.manageCalendarPermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.WRITE_CALENDAR);
                                             calendar.addRecordEventToCalendar(PuzzleActivity.this, level, TimeConverter.convertTimeMillisToReadableString(score));
-                                            calendar.createNotification(PuzzleActivity.this, TimeConverter.convertTimeMillisToReadableString(score));
+                                            calendar.createNotification(PuzzleActivity.this, scorePuzzle, PuzzleHolder.getInstance().getPuzzle().getPath());
 
                                             final Dialog finishDialog = new Dialog(PuzzleActivity.this, android.R.style.Theme_Black_NoTitleBar);
                                             finishDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));

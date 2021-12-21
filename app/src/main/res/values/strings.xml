@@ -41,4 +41,7 @@
     <string name="new_record_with_score_and_level">New Record: %1$s, Level %2$s</string>
     <string name="camera">Camera</string>
     <string name="puzzle_completed_description">Puzzle Completed Image</string>
+    <string name="score_header">Score</string>
+    <string name="score_image_description">Score Image</string>
+    <string name="start">Start</string>
 </resources>

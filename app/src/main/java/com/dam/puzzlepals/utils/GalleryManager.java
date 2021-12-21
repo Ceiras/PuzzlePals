@@ -56,6 +56,13 @@ public class GalleryManager {
         return randomImage;
     }
 
+    public static Bitmap uriToBitmap(Context context, Uri uri) {
+        ImageView imageView = new ImageView(context);
+        imageView.setImageURI(uri);
+        BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
+        return drawable.getBitmap();
+    }
+
     public static String uriToBase64(Context context, Uri uri) {
         ImageView imageView = new ImageView(context);
         imageView.setImageURI(uri);

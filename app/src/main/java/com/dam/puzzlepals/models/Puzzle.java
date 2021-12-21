@@ -11,6 +11,7 @@ import java.util.List;
 public class Puzzle {
 
     private Bitmap image;
+    private String path;
     private Level level;
     private List<PuzzlePiece> puzzlePieces;
     private List<PuzzlePiece> shuffledPuzzlePieces;
@@ -30,6 +31,14 @@ public class Puzzle {
 
     public void setImage(Bitmap image) {
         this.image = image;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public Level getLevel() {

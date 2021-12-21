@@ -1,6 +1,5 @@
 package com.dam.puzzlepals.ui;
 
-import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,7 +24,6 @@ import androidx.core.content.FileProvider;
 import com.dam.puzzlepals.R;
 import com.dam.puzzlepals.holders.PuzzleHolder;
 import com.dam.puzzlepals.utils.GalleryManager;
-import com.dam.puzzlepals.utils.PermissionManger;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,11 +56,13 @@ public class SelectImgActivity extends AppCompatActivity {
                     Bitmap bitmap;
                     if (result.getData().getData() != null) {
                         Uri photoPath = result.getData().getData();
+                        PuzzleHolder.getInstance().getPuzzle().setPath(photoPath.toString());
                         selectedImageView.setImageURI(photoPath);
                         BitmapDrawable drawable = (BitmapDrawable) selectedImageView.getDrawable();
                         bitmap = drawable.getBitmap();
                     } else {
                         bitmap = BitmapFactory.decodeFile(imagePath);
+                        PuzzleHolder.getInstance().getPuzzle().setPath(imagePath);
                         selectedImageView.setImageBitmap(bitmap);
                     }
                     PuzzleHolder.getInstance().getPuzzle().setImage(bitmap);
@@ -82,6 +82,7 @@ public class SelectImgActivity extends AppCompatActivity {
 
         Uri imagePath = GalleryManager.getRandomImageFromGallery(this);
         if (imagePath != null) {
+            PuzzleHolder.getInstance().getPuzzle().setPath(imagePath.toString());
             SelectImgActivity.this.imageSelected = true;
             nextButton.setBackgroundColor(Color.parseColor("#FF6200EE"));
             nextButton.setClickable(SelectImgActivity.this.imageSelected);

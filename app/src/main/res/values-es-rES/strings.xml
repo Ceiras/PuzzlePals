@@ -42,4 +42,7 @@
     <string name="storage_permission_required">Solicitud de permisos de Almacenamiento</string>
     <string name="storage_permission_required_description">Los permisos de Almacenamiento son necesarios para recuperar las imágenes para construir los puzzles</string>
     <string name="puzzle_completed_description">Imágen del puzzle completado</string>
+    <string name="score_header">Puntuación</string>
+    <string name="score_image_description">Imágen de la puntuación</string>
+    <string name="start">Inicio</string>
 </resources>
