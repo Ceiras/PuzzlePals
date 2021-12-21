@@ -41,4 +41,5 @@
     <string name="camera">Cámara</string>
     <string name="storage_permission_required">Solicitud de permisos de Almacenamiento</string>
     <string name="storage_permission_required_description">Los permisos de Almacenamiento son necesarios para recuperar las imágenes para construir los puzzles</string>
+    <string name="puzzle_completed_description">Imágen del puzzle completado</string>
 </resources>

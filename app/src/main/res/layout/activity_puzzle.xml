@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout2"
+    android:id="@+id/frame_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/purple_500"
@@ -23,11 +23,23 @@
         android:id="@+id/puzzle_grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="58dp"
         android:gravity="center|center_horizontal|center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pieces_help_text" />
+
+    <ImageView
+        android:id="@+id/puzzle_completed_image_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:contentDescription="@string/puzzle_completed_description"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/puzzle_grid_view"
+        app:layout_constraintEnd_toEndOf="@+id/puzzle_grid_view"
+        app:layout_constraintStart_toStartOf="@+id/puzzle_grid_view"
+        app:layout_constraintTop_toBottomOf="@+id/pieces_help_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

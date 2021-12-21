@@ -53,6 +53,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
     private void buildPuzzleGridView() {
         GridView puzzleGridView = findViewById(R.id.puzzle_grid_view);
+        ImageView puzzleCompletedView = findViewById(R.id.puzzle_completed_image_view);
 
         int grid = 1;
         switch (PuzzleHolder.getInstance().getPuzzle().getLevel()) {
@@ -108,33 +109,72 @@ public class PuzzleActivity extends AppCompatActivity {
 
                         boolean isComplete = PuzzleHolder.getInstance().getPuzzle().isComplete();
                         if (isComplete) {
-                            PuzzleHolder.getInstance().getPuzzle().finish();
-                            long score = PuzzleHolder.getInstance().getPuzzle().getScore();
-                            Level level = PuzzleHolder.getInstance().getPuzzle().getLevel();
-                            String image = GalleryManager.bitmapToBase64(PuzzleHolder.getInstance().getPuzzle().getImage());
+                            Animation fadeOutAnimation = AnimationUtils.loadAnimation(PuzzleActivity.this, R.anim.fade_out);
+                            fadeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
 
-                            ScoreAPI scoreApi = new ScoreAPI(PuzzleActivity.this);
-                            scoreApi.addScore(score, level, image);
+                                }
 
-                            CalendarManager calendar = new CalendarManager(PuzzleActivity.this);
-                            PermissionManger.manageCalendarPermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.READ_CALENDAR);
-                            PermissionManger.manageCalendarPermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.WRITE_CALENDAR);
-                            calendar.addRecordEventToCalendar(PuzzleActivity.this, level, TimeConverter.convertTimeMillisToReadableString(score));
-                            calendar.createNotification(PuzzleActivity.this, TimeConverter.convertTimeMillisToReadableString(score));
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    Animation fadeInAnimation = AnimationUtils.loadAnimation(PuzzleActivity.this, R.anim.fade_in);
+                                    fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
+                                        @Override
+                                        public void onAnimationStart(Animation animation) {
 
-                            final Dialog finishDialog = new Dialog(PuzzleActivity.this, android.R.style.Theme_Black_NoTitleBar);
-                            finishDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
-                            finishDialog.setContentView(R.layout.congrats_dialogue);
-                            finishDialog.setCancelable(true);
-                            finishDialog.show();
+                                        }
 
-                            TextView scoreText = (TextView) finishDialog.findViewById(R.id.score_txt);
-                            scoreText.setText(TimeConverter.convertTimeMillisToReadableString(score));
-                            Button finishButton = (Button) finishDialog.findViewById(R.id.finish_btn);
-                            finishButton.setOnClickListener(dialogView -> {
-                                Intent mainActivityIntent = new Intent(PuzzleActivity.this, MainActivity.class);
-                                startActivity(mainActivityIntent);
+                                        @Override
+                                        public void onAnimationEnd(Animation animation) {
+                                            PuzzleHolder.getInstance().getPuzzle().finish();
+                                            long score = PuzzleHolder.getInstance().getPuzzle().getScore();
+                                            Level level = PuzzleHolder.getInstance().getPuzzle().getLevel();
+                                            String image = GalleryManager.bitmapToBase64(PuzzleHolder.getInstance().getPuzzle().getImage());
+
+                                            ScoreAPI scoreApi = new ScoreAPI(PuzzleActivity.this);
+                                            scoreApi.addScore(score, level, image);
+
+                                            CalendarManager calendar = new CalendarManager(PuzzleActivity.this);
+                                            PermissionManger.manageCalendarPermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.READ_CALENDAR);
+                                            PermissionManger.manageCalendarPermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.WRITE_CALENDAR);
+                                            calendar.addRecordEventToCalendar(PuzzleActivity.this, level, TimeConverter.convertTimeMillisToReadableString(score));
+                                            calendar.createNotification(PuzzleActivity.this, TimeConverter.convertTimeMillisToReadableString(score));
+
+                                            final Dialog finishDialog = new Dialog(PuzzleActivity.this, android.R.style.Theme_Black_NoTitleBar);
+                                            finishDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+                                            finishDialog.setContentView(R.layout.congrats_dialogue);
+                                            finishDialog.setCancelable(true);
+                                            finishDialog.show();
+
+                                            TextView scoreText = (TextView) finishDialog.findViewById(R.id.score_txt);
+                                            scoreText.setText(TimeConverter.convertTimeMillisToReadableString(score));
+                                            Button finishButton = (Button) finishDialog.findViewById(R.id.finish_btn);
+                                            finishButton.setOnClickListener(dialogView -> {
+                                                Intent mainActivityIntent = new Intent(PuzzleActivity.this, MainActivity.class);
+                                                startActivity(mainActivityIntent);
+                                            });
+                                        }
+
+                                        @Override
+                                        public void onAnimationRepeat(Animation animation) {
+
+                                        }
+                                    });
+                                    fadeInAnimation.setFillAfter(true);
+                                    puzzleCompletedView.setImageBitmap(PuzzleHolder.getInstance().getPuzzle().getImage());
+                                    puzzleCompletedView.setVisibility(View.VISIBLE);
+                                    puzzleCompletedView.startAnimation(fadeInAnimation);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+
+                                }
                             });
+
+                            fadeOutAnimation.setFillAfter(true);
+                            puzzleGridView.startAnimation(fadeOutAnimation);
                         } else {
                             piecesToExchange.clear();
                         }
