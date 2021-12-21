@@ -63,8 +63,6 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
-        Intent backgroundMusicService = new Intent(this, BackgroundMusicService.class);
-        backgroundMusicService.setAction(MusicPlayer.STOP.toString());
-        startService(backgroundMusicService);
+
     }
 }

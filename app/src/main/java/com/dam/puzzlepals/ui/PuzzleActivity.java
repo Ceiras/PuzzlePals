@@ -158,6 +158,7 @@ public class PuzzleActivity extends AppCompatActivity {
                                             scoreText.setText(TimeConverter.convertTimeMillisToReadableString(score));
                                             Button finishButton = (Button) finishDialog.findViewById(R.id.finish_btn);
                                             finishButton.setOnClickListener(dialogView -> {
+                                                finishDialog.dismiss();
                                                 Intent mainActivityIntent = new Intent(PuzzleActivity.this, MainActivity.class);
                                                 startActivity(mainActivityIntent);
                                             });
