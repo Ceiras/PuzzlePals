@@ -28,9 +28,7 @@ public class PermissionManger {
                                         activity,
                                         new String[]{
                                                 Manifest.permission.READ_CALENDAR,
-                                                Manifest.permission.WRITE_CALENDAR,
-                                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                                Manifest.permission.WRITE_CALENDAR
                                         },
                                         PERMISSION_CODE
                                 );
@@ -49,9 +47,7 @@ public class PermissionManger {
                         activity,
                         new String[]{
                                 Manifest.permission.READ_CALENDAR,
-                                Manifest.permission.WRITE_CALENDAR,
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                Manifest.permission.WRITE_CALENDAR
                         },
                         PERMISSION_CODE
                 );

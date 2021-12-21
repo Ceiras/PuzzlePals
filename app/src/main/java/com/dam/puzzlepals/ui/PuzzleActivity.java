@@ -145,7 +145,7 @@ public class PuzzleActivity extends AppCompatActivity {
                                             calendar.addRecordEventToCalendar(PuzzleActivity.this, level, TimeConverter.convertTimeMillisToReadableString(score));
 
                                             if (isRecord) {
-                                                NotificationsManager.createNotification(PuzzleActivity.this, scorePuzzle, PuzzleHolder.getInstance().getPuzzle().getPath());
+                                                NotificationsManager.createNotification(PuzzleActivity.this, scorePuzzle, PuzzleHolder.getInstance().getPuzzle().getNumber());
                                             }
 
                                             final Dialog finishDialog = new Dialog(PuzzleActivity.this, android.R.style.Theme_Black_NoTitleBar);

@@ -48,4 +48,5 @@
     <string name="login_fail">Authentication Error</string>
     <string name="sing_out">Sing Out</string>
     <string name="must_be_authenticated">You must be authenticated</string>
+    <string name="get_from_database_error">Error retrieving data from database</string>
 </resources>

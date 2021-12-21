@@ -49,4 +49,5 @@
     <string name="login_fail">Error en la autenticación</string>
     <string name="sing_out">Cerrar sesión</string>
     <string name="must_be_authenticated">Debe estar autenticado</string>
+    <string name="get_from_database_error">Error recuperando la información de la base de datos</string>
 </resources>

@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class NotificationsManager {
 
-    public static void createNotification(Context context, Score score, String path) {
+    public static void createNotification(Context context, Score score, int puzzleNumber) {
         CharSequence name = context.getResources().getString(R.string.channel_name);
         String description = context.getResources().getString(R.string.channel_description);
         int importance = NotificationManager.IMPORTANCE_HIGH;
@@ -37,7 +37,7 @@ public class NotificationsManager {
         intent.putExtra("date", TimeConverter.convertDateToCompleteFormatDate(score.getDate()));
         intent.putExtra("score", TimeConverter.convertTimeMillisToReadableString(score.getScore()));
         intent.putExtra("level", score.getLevel().toString());
-        intent.putExtra("image", path);
+        intent.putExtra("number", puzzleNumber);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, UUID.randomUUID().hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "CHANNEL_NEW_RECORD")
