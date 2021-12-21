@@ -59,10 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> googleSignInLauncher;
     private LinearLayout userLogged;
     private Button loginButton;
-    private Button playButton;
     private TextView emailUserLogged;
     private TextView nameUserLogged;
-    private boolean isLogged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
 
         userLogged = findViewById(R.id.user_logged_layout);
         loginButton = findViewById(R.id.singin_google_btn);
-        playButton = findViewById(R.id.play_btn);
         emailUserLogged = findViewById(R.id.user_logged_email_text);
         nameUserLogged = findViewById(R.id.user_logged_name_text);
 
