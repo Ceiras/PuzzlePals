@@ -60,6 +60,7 @@ public class BackgroundMusicService extends Service {
     private void stop() {
         mediaPlayer.stop();
         mediaPlayer.release();
+        mediaPlayer = MediaPlayer.create(this, R.raw.background_sound);
     }
 
     private void changeSong(Uri uriSong) {
