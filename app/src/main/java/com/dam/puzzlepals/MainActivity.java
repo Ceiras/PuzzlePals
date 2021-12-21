@@ -58,9 +58,11 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> googleSignInLauncher;
     private LinearLayout userLogged;
-    private Button singInButton;
+    private Button loginButton;
+    private Button playButton;
     private TextView emailUserLogged;
     private TextView nameUserLogged;
+    private boolean isLogged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         userLogged = findViewById(R.id.user_logged_layout);
-        singInButton = findViewById(R.id.singin_google_btn);
+        loginButton = findViewById(R.id.singin_google_btn);
+        playButton = findViewById(R.id.play_btn);
         emailUserLogged = findViewById(R.id.user_logged_email_text);
         nameUserLogged = findViewById(R.id.user_logged_name_text);
 
@@ -102,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                                         });
 
                                         userLogged.setVisibility(View.VISIBLE);
-                                        singInButton.setVisibility(View.INVISIBLE);
+                                        loginButton.setVisibility(View.INVISIBLE);
 
                                         FirebaseEvents.loginEvent(MainActivity.this, LoginMethod.GOOGLE);
                                     } else {
@@ -126,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             emailUserLogged.setText(loginEmail);
             nameUserLogged.setText(loginName);
             userLogged.setVisibility(View.VISIBLE);
-            singInButton.setVisibility(View.INVISIBLE);
+            loginButton.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -220,16 +223,22 @@ public class MainActivity extends AppCompatActivity {
         loginSharedPreferences.clear();
         loginSharedPreferences.apply();
 
-        singInButton.setVisibility(View.VISIBLE);
+        FirebaseAuth.getInstance().signOut();
+
+        loginButton.setVisibility(View.VISIBLE);
         userLogged.setVisibility(View.INVISIBLE);
 
         FirebaseEvents.singOutEvent(this, LoginMethod.GOOGLE);
     }
 
     public void onClickPlayButton(View view) {
-        FirebaseEvents.startGameEvent(this);
-        Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
-        startActivity(selectImageActivityIntent);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseEvents.startGameEvent(this);
+            Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
+            startActivity(selectImageActivityIntent);
+        } else {
+            Toast.makeText(MainActivity.this, R.string.must_be_authenticated, Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

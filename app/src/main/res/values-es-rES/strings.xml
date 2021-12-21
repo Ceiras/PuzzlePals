@@ -48,4 +48,5 @@
     <string name="login_google">Inicia sesión con Google</string>
     <string name="login_fail">Error en la autenticación</string>
     <string name="sing_out">Cerrar sesión</string>
+    <string name="must_be_authenticated">Debe estar autenticado</string>
 </resources>
