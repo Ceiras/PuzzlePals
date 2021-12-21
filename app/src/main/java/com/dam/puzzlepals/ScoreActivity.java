@@ -37,7 +37,7 @@ public class ScoreActivity extends AppCompatActivity {
         String date = intent.getStringExtra("date");
         String score = intent.getStringExtra("score");
         Level level = Level.valueOf(intent.getStringExtra("level"));
-        int number = intent.getIntExtra("number", 0);
+        Long number = intent.getLongExtra("number", 0);
 
         dateText.setText(date);
         scoreText.setText(score);
@@ -49,7 +49,7 @@ public class ScoreActivity extends AppCompatActivity {
         });
     }
 
-    private void getPuzzleImage(int puzzleNumber) {
+    private void getPuzzleImage(Long puzzleNumber) {
         Task<QuerySnapshot> puzzleImageQuery = ImagesCollection.getImage(puzzleNumber);
         puzzleImageQuery.addOnSuccessListener(command -> {
             if (command.getDocuments().size() == 1) {
@@ -59,6 +59,8 @@ public class ScoreActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, R.string.get_from_database_error, Toast.LENGTH_LONG).show();
             }
+        }).addOnFailureListener(command -> {
+            Toast.makeText(this, R.string.get_from_database_error, Toast.LENGTH_LONG).show();
         });
     }
 

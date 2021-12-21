@@ -44,8 +44,8 @@ public class SelectImgActivity extends AppCompatActivity {
     }
 
     private void getPuzzleImage() {
-        int puzzleNumber = 1;
-        Task<QuerySnapshot> puzzleImageQuery = ImagesCollection.getImage(puzzleNumber); // TODO: Control level based on User
+        Long puzzleNumber = PuzzleHolder.getInstance().getUser().getPuzzleNumber();
+        Task<QuerySnapshot> puzzleImageQuery = ImagesCollection.getImage(puzzleNumber);
         puzzleImageQuery.addOnSuccessListener(command -> {
             loadingImgSpinner.setVisibility(View.INVISIBLE);
             if (command.getDocuments().size() == 1) {

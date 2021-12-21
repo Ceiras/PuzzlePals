@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class NotificationsManager {
 
-    public static void createNotification(Context context, Score score, int puzzleNumber) {
+    public static void createNotification(Context context, Score score, Long puzzleNumber) {
         CharSequence name = context.getResources().getString(R.string.channel_name);
         String description = context.getResources().getString(R.string.channel_description);
         int importance = NotificationManager.IMPORTANCE_HIGH;

@@ -13,7 +13,7 @@ public class ImagesCollection {
     public static final String IMAGES_COL_NUMBER = "number";
     public static final String IMAGES_COL_DATA = "data";
 
-    public static Task<QuerySnapshot> getImage(int level) {
+    public static Task<QuerySnapshot> getImage(Long level) {
         return database.collection(IMAGES_COLLECTION).whereEqualTo(IMAGES_COL_NUMBER, level).get();
     }
 

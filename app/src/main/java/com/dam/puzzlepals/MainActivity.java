@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,9 +25,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dam.puzzlepals.database.ImagesCollection;
+import com.dam.puzzlepals.database.UsersCollection;
 import com.dam.puzzlepals.enums.LoginMethod;
 import com.dam.puzzlepals.enums.MusicPlayer;
+import com.dam.puzzlepals.holders.PuzzleHolder;
 import com.dam.puzzlepals.models.Score;
+import com.dam.puzzlepals.models.User;
 import com.dam.puzzlepals.services.BackgroundMusicService;
 import com.dam.puzzlepals.sqlite.ScoreAPI;
 import com.dam.puzzlepals.ui.HelpActivity;
@@ -35,6 +40,7 @@ import com.dam.puzzlepals.ui.SelectImgActivity;
 import com.dam.puzzlepals.ui.SettingsActivity;
 import com.dam.puzzlepals.utils.CalendarManager;
 import com.dam.puzzlepals.utils.FirebaseEvents;
+import com.dam.puzzlepals.utils.GalleryManager;
 import com.dam.puzzlepals.utils.PermissionManger;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -46,6 +52,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 
@@ -121,6 +128,11 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences loginSharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
         String loginEmail = loginSharedPreferences.getString(LOGIN_EMAIL, null);
         String loginName = loginSharedPreferences.getString(LOGIN_NAME, null);
+
+        Handler saveUserHandler = new Handler(Looper.getMainLooper());
+        saveUserHandler.post(() -> {
+            saveUser(loginEmail, loginName);
+        });
 
         if (loginEmail != null && loginName != null) {
             emailUserLogged.setText(loginEmail);
@@ -211,8 +223,38 @@ public class MainActivity extends AppCompatActivity {
         loginSharedPreferences.putString(LOGIN_NAME, firebaseUser.getDisplayName());
         loginSharedPreferences.apply();
 
+        Handler saveUserHandler = new Handler(Looper.getMainLooper());
+        saveUserHandler.post(() -> {
+            saveUser(firebaseUser.getEmail(), firebaseUser.getDisplayName());
+        });
+
         emailUserLogged.setText(firebaseUser.getEmail());
         nameUserLogged.setText(firebaseUser.getDisplayName());
+    }
+
+    private void saveUser(String email, String name) {
+        UsersCollection.getUser(email).addOnSuccessListener(command -> {
+            User user = new User();
+            if (command.getDocuments().size() == 1) {
+                Long puzzleNumber = command.getDocuments().get(0).getLong(UsersCollection.USERS_COL_PUZZLE_NUMBER);
+
+                UsersCollection.updateUser(email, name, puzzleNumber);
+
+                user.setEmail(email);
+                user.setName(name);
+                user.setPuzzleNumber(puzzleNumber);
+            } else {
+                UsersCollection.addUser(email, name);
+
+                user.setEmail(email);
+                user.setName(name);
+                user.setPuzzleNumber(1L);
+            }
+
+            PuzzleHolder.getInstance().setUser(user);
+        }).addOnFailureListener(command -> {
+            Toast.makeText(this, R.string.get_from_database_error, Toast.LENGTH_LONG).show();
+        });
     }
 
     public void onClickSingOut(View view) {

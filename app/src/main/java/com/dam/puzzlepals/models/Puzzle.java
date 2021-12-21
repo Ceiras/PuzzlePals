@@ -11,7 +11,7 @@ import java.util.List;
 public class Puzzle {
 
     private Bitmap image;
-    private int number;
+    private Long number;
     private Level level;
     private List<PuzzlePiece> puzzlePieces;
     private List<PuzzlePiece> shuffledPuzzlePieces;
@@ -33,11 +33,11 @@ public class Puzzle {
         this.image = image;
     }
 
-    public int getNumber() {
+    public Long getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(Long number) {
         this.number = number;
     }
 
