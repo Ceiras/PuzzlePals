@@ -2,6 +2,7 @@ package com.dam.puzzlepals.calendar;
 
 import static androidx.core.content.ContextCompat.getSystemService;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -31,7 +32,7 @@ public class CalendarManager {
     }
 
     public void addRecordEventToCalendar(Activity activity, Level level, String score) {
-        if (ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
             long currentTime = System.currentTimeMillis();
 
             ContentValues values = new ContentValues();

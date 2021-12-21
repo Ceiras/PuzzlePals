@@ -78,7 +78,6 @@ public class SelectImgActivity extends AppCompatActivity {
     }
 
     public void loadImageFromGallery(View view) {
-        PermissionManger.manageStoragePermissions(SelectImgActivity.this, SelectImgActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
         ImageView selectedImageView = findViewById(R.id.selected_img_view);
 
         Uri imagePath = GalleryManager.getRandomImageFromGallery(this);
@@ -122,7 +121,7 @@ public class SelectImgActivity extends AppCompatActivity {
     private File getImageFile() throws IOException {
         File storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
-        File imageFile = File.createTempFile("photo_", ".jpg", storageDirectory);
+        File imageFile = File.createTempFile("IMG_", ".jpg", storageDirectory);
         imagePath = imageFile.getAbsolutePath();
 
         return imageFile;
