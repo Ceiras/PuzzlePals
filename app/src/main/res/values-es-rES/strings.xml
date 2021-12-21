@@ -45,7 +45,7 @@
     <string name="score_header">Puntuación</string>
     <string name="score_image_description">Imágen de la puntuación</string>
     <string name="start">Inicio</string>
-    <string name="sing_in_google">Inicia sesión con Google</string>
+    <string name="login_google">Inicia sesión con Google</string>
     <string name="login_fail">Error en la autenticación</string>
     <string name="sing_out">Cerrar sesión</string>
 </resources>

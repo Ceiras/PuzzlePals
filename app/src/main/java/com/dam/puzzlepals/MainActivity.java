@@ -24,6 +24,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dam.puzzlepals.enums.LoginMethod;
 import com.dam.puzzlepals.enums.MusicPlayer;
 import com.dam.puzzlepals.models.Score;
 import com.dam.puzzlepals.services.BackgroundMusicService;
@@ -33,6 +34,7 @@ import com.dam.puzzlepals.ui.ScoreListAdapter;
 import com.dam.puzzlepals.ui.SelectImgActivity;
 import com.dam.puzzlepals.ui.SettingsActivity;
 import com.dam.puzzlepals.utils.CalendarManager;
+import com.dam.puzzlepals.utils.FirebaseEvents;
 import com.dam.puzzlepals.utils.PermissionManger;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -101,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
 
                                         userLogged.setVisibility(View.VISIBLE);
                                         singInButton.setVisibility(View.INVISIBLE);
+
+                                        FirebaseEvents.loginEvent(MainActivity.this, LoginMethod.GOOGLE);
                                     } else {
                                         Toast.makeText(MainActivity.this, R.string.login_fail, Toast.LENGTH_LONG).show();
                                     }
@@ -218,9 +222,12 @@ public class MainActivity extends AppCompatActivity {
 
         singInButton.setVisibility(View.VISIBLE);
         userLogged.setVisibility(View.INVISIBLE);
+
+        FirebaseEvents.singOutEvent(this, LoginMethod.GOOGLE);
     }
 
     public void onClickPlayButton(View view) {
+        FirebaseEvents.startGameEvent(this);
         Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
         startActivity(selectImageActivityIntent);
     }
