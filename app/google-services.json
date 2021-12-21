@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "883037560613",
+    "project_id": "puzzlepals-7815a",
+    "storage_bucket": "puzzlepals-7815a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:883037560613:android:fcc400f062de14bb4904cc",
+        "android_client_info": {
+          "package_name": "com.dam.puzzlepals"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "883037560613-6krtm86bgm757843sclkh5a9jn0bbm42.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSE7or8WURJnVbJkGXN8baAZhBTzgwzgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "883037560613-6krtm86bgm757843sclkh5a9jn0bbm42.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
