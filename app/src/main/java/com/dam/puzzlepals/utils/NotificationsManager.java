@@ -31,12 +31,6 @@ public class NotificationsManager {
         createNotificationHandler.post(() -> {
             ScoresCollection.scoreIsBest(email, puzzleNumber, level, score).addOnSuccessListener(command -> {
                 boolean isRecord = command.getDocuments().size() == 0;
-                if (command.getDocuments().size() == 1) {
-                    DocumentSnapshot scoreRecord = command.getDocuments().get(0);
-                    if (scoreRecord != null && score < scoreRecord.getLong(ScoresCollection.SCORES_COL_SCORE)) {
-                        isRecord = true;
-                    }
-                }
 
                 if (isRecord) {
                     CharSequence name = context.getResources().getString(R.string.channel_name);

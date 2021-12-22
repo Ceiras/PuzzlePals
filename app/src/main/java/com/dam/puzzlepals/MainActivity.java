@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ import com.dam.puzzlepals.models.Score;
 import com.dam.puzzlepals.models.User;
 import com.dam.puzzlepals.services.BackgroundMusicService;
 import com.dam.puzzlepals.ui.HelpActivity;
+import com.dam.puzzlepals.ui.PersonalScoreActivity;
 import com.dam.puzzlepals.ui.ScoreListAdapter;
 import com.dam.puzzlepals.ui.SelectImgActivity;
 import com.dam.puzzlepals.ui.SettingsActivity;
@@ -50,6 +52,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -71,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private Button loginButton;
     private TextView emailUserLogged;
     private TextView nameUserLogged;
+    private FloatingActionButton personalScoresButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.singin_google_btn);
         emailUserLogged = findViewById(R.id.user_logged_email_text);
         nameUserLogged = findViewById(R.id.user_logged_name_text);
+        personalScoresButton = findViewById(R.id.personal_score_button);
 
         phoneCallListener();
 
@@ -226,28 +231,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveUser(String email, String name) {
-        UsersCollection.getUser(email).addOnSuccessListener(command -> {
-            User user = new User();
-            if (command.getDocuments().size() == 1) {
-                Long puzzleNumber = command.getDocuments().get(0).getLong(UsersCollection.USERS_COL_PUZZLE_NUMBER);
+        if (email != null && name != null) {
+            UsersCollection.getUser(email).addOnSuccessListener(command -> {
+                User user = new User();
+                if (command.getDocuments().size() == 1) {
+                    Long puzzleNumber = command.getDocuments().get(0).getLong(UsersCollection.USERS_COL_PUZZLE_NUMBER);
 
-                UsersCollection.saveUser(email, name, puzzleNumber);
+                    UsersCollection.saveUser(email, name, puzzleNumber);
 
-                user.setEmail(email);
-                user.setName(name);
-                user.setPuzzleNumber(puzzleNumber);
-            } else {
-                UsersCollection.saveUser(email, name, 1L);
+                    user.setEmail(email);
+                    user.setName(name);
+                    user.setPuzzleNumber(puzzleNumber);
+                } else {
+                    UsersCollection.saveUser(email, name, 1L);
 
-                user.setEmail(email);
-                user.setName(name);
-                user.setPuzzleNumber(1L);
-            }
+                    user.setEmail(email);
+                    user.setName(name);
+                    user.setPuzzleNumber(1L);
+                }
 
-            PuzzleHolder.getInstance().setUser(user);
-        }).addOnFailureListener(command -> {
-            Toast.makeText(this, R.string.get_from_database_error, Toast.LENGTH_LONG).show();
-        });
+                PuzzleHolder.getInstance().setUser(user);
+                personalScoresButton.setVisibility(View.VISIBLE);
+            }).addOnFailureListener(command -> {
+                Toast.makeText(this, R.string.get_from_database_error, Toast.LENGTH_LONG).show();
+            });
+        }
     }
 
     private void getBetterScores() {
@@ -280,52 +288,59 @@ public class MainActivity extends AppCompatActivity {
         loginSharedPreferences.apply();
 
         FirebaseAuth.getInstance().signOut();
+        PuzzleHolder.getInstance().setUser(null);
 
         loginButton.setVisibility(View.VISIBLE);
         userLogged.setVisibility(View.INVISIBLE);
+        personalScoresButton.setVisibility(View.INVISIBLE);
 
         FirebaseEvents.singOutEvent(this, LoginMethod.GOOGLE);
     }
 
     public void onClickPlayButton(View view) {
-        ImagesCollection.getImages().addOnSuccessListener(command -> {
-            if (command.getDocuments().size() < PuzzleHolder.getInstance().getUser().getPuzzleNumber()) {
-                final Dialog finishDialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar);
-                finishDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
-                finishDialog.setContentView(R.layout.end_game_dialogue);
-                finishDialog.setCancelable(true);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            ImagesCollection.getImages().addOnSuccessListener(command -> {
+                if (command.getDocuments().size() < PuzzleHolder.getInstance().getUser().getPuzzleNumber()) {
+                    final Dialog finishDialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar);
+                    finishDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+                    finishDialog.setContentView(R.layout.end_game_dialogue);
+                    finishDialog.setCancelable(true);
 
-                Button closeButton = (Button) finishDialog.findViewById(R.id.close_btn);
-                closeButton.setOnClickListener(dialogView -> {
-                    finishDialog.dismiss();
-                });
+                    Button closeButton = (Button) finishDialog.findViewById(R.id.close_btn);
+                    closeButton.setOnClickListener(dialogView -> {
+                        finishDialog.dismiss();
+                    });
 
-                Button startAgainButton = (Button) finishDialog.findViewById(R.id.start_again_btn);
-                startAgainButton.setOnClickListener(dialogView -> {
-                    User user = PuzzleHolder.getInstance().getUser();
-                    UsersCollection.saveUser(user.getEmail(), user.getName(), 1L);
+                    Button startAgainButton = (Button) finishDialog.findViewById(R.id.start_again_btn);
+                    startAgainButton.setOnClickListener(dialogView -> {
+                        User user = PuzzleHolder.getInstance().getUser();
+                        UsersCollection.saveUser(user.getEmail(), user.getName(), 1L);
 
-                    user.setPuzzleNumber(1L);
-                    PuzzleHolder.getInstance().setUser(user);
+                        user.setPuzzleNumber(1L);
+                        PuzzleHolder.getInstance().setUser(user);
 
-                    finishDialog.dismiss();
+                        finishDialog.dismiss();
 
-                    FirebaseEvents.startGameEvent(this);
-                    Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
-                    startActivity(selectImageActivityIntent);
-                });
+                        FirebaseEvents.startGameEvent(this);
+                        Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
+                        startActivity(selectImageActivityIntent);
+                    });
 
-                finishDialog.show();
-            } else {
-                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    FirebaseEvents.startGameEvent(this);
-                    Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
-                    startActivity(selectImageActivityIntent);
+                    finishDialog.show();
                 } else {
-                    Toast.makeText(MainActivity.this, R.string.must_be_authenticated, Toast.LENGTH_SHORT).show();
+                    FirebaseEvents.startGameEvent(this);
+                    Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
+                    startActivity(selectImageActivityIntent);
                 }
-            }
-        });
+            });
+        } else {
+            Toast.makeText(MainActivity.this, R.string.must_be_authenticated, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void onClickPersonalScore(View view) {
+        Intent personalScoreActivityIntent = new Intent(this, PersonalScoreActivity.class);
+        startActivity(personalScoreActivityIntent);
     }
 
 }

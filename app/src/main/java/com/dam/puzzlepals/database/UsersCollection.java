@@ -21,13 +21,13 @@ public class UsersCollection {
         return database.collection(USERS_COLLECTION).whereEqualTo(USERS_COL_EMAIL, email).get();
     }
 
-    public static Task<Void> saveUser(String email, String name, Long puzzleNumber) {
+    public static void saveUser(String email, String name, Long puzzleNumber) {
         Map<String, Object> user = new HashMap<>();
         user.put(USERS_COL_EMAIL, email);
         user.put(USERS_COL_NAME, name);
         user.put(USERS_COL_PUZZLE_NUMBER, puzzleNumber);
 
-        return database.collection(USERS_COLLECTION).document(email).set(user);
+        database.collection(USERS_COLLECTION).document(email).set(user);
     }
 
 }

@@ -23,6 +23,13 @@ public class ScoresCollection {
     public static final String SCORES_COL_LEVEL = "level";
     public static final String SCORES_COL_SCORE = "score";
 
+    public static Task<QuerySnapshot> getUserBestScores(String email) {
+        return database.collection(SCORES_COLLECTION)
+                .whereEqualTo(SCORES_COL_EMAIL, email)
+                .orderBy(SCORES_COL_SCORE, Query.Direction.ASCENDING)
+                .get();
+    }
+
     public static Task<QuerySnapshot> getBestScores(int limit) {
         return database.collection(SCORES_COLLECTION)
                 .orderBy(SCORES_COL_SCORE, Query.Direction.ASCENDING)
@@ -34,7 +41,7 @@ public class ScoresCollection {
         return database.collection(SCORES_COLLECTION)
                 .whereEqualTo(SCORES_COL_EMAIL, email)
                 .whereEqualTo(SCORES_COL_PUZZLE_NUMBER, puzzleNumber)
-                .whereEqualTo(SCORES_COL_SCORE, level.toString())
+                .whereEqualTo(SCORES_COL_LEVEL, level.toString())
                 .whereLessThan(SCORES_COL_SCORE, score)
                 .orderBy(SCORES_COL_SCORE, Query.Direction.DESCENDING)
                 .limit(1)

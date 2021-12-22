@@ -48,6 +48,9 @@
         <activity
             android:name=".ScoreActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.PersonalScoreActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
