@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,22 +24,21 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.dam.puzzlepals.database.ImagesCollection;
+import com.dam.puzzlepals.database.ScoresCollection;
 import com.dam.puzzlepals.database.UsersCollection;
+import com.dam.puzzlepals.enums.Level;
 import com.dam.puzzlepals.enums.LoginMethod;
 import com.dam.puzzlepals.enums.MusicPlayer;
 import com.dam.puzzlepals.holders.PuzzleHolder;
 import com.dam.puzzlepals.models.Score;
 import com.dam.puzzlepals.models.User;
 import com.dam.puzzlepals.services.BackgroundMusicService;
-import com.dam.puzzlepals.sqlite.ScoreAPI;
 import com.dam.puzzlepals.ui.HelpActivity;
 import com.dam.puzzlepals.ui.ScoreListAdapter;
 import com.dam.puzzlepals.ui.SelectImgActivity;
 import com.dam.puzzlepals.ui.SettingsActivity;
 import com.dam.puzzlepals.utils.CalendarManager;
 import com.dam.puzzlepals.utils.FirebaseEvents;
-import com.dam.puzzlepals.utils.GalleryManager;
 import com.dam.puzzlepals.utils.PermissionManger;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -52,9 +50,10 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -83,9 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
         CalendarManager calendar = new CalendarManager(MainActivity.this);
         PermissionManger.manageCalendarPermissions(MainActivity.this, MainActivity.this, calendar, Manifest.permission.READ_CALENDAR);
-
-        Handler getBetterScoresHandler = new Handler(Looper.getMainLooper());
-        getBetterScoresHandler.post(this::getBetterScores);
 
         Handler checkLoginDataHandler = new Handler(Looper.getMainLooper());
         checkLoginDataHandler.post(this::checkLoginData);
@@ -142,21 +138,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void getBetterScores() {
-        ScoreAPI scoreAPI = new ScoreAPI(this);
-        ArrayList<Score> betterScores = scoreAPI.getBetterScores(null, 3);
-
-        if (betterScores.size() > 0) {
-            ListView topScoreList = findViewById(R.id.top_score_list);
-            topScoreList.setVisibility(View.VISIBLE);
-            ScoreListAdapter topScoreAdapter = new ScoreListAdapter(this, betterScores);
-            topScoreList.setAdapter(topScoreAdapter);
-        } else {
-            TextView emptyScoreList = findViewById(R.id.empty_score_list);
-            emptyScoreList.setVisibility(View.VISIBLE);
-        }
-    }
-
     private void phoneCallListener() {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         PhoneStateListener phoneStateListener = new PhoneStateListener() {
@@ -173,6 +154,14 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Handler getBetterScoresHandler = new Handler(Looper.getMainLooper());
+        getBetterScoresHandler.post(this::getBetterScores);
     }
 
     @Override
@@ -238,13 +227,13 @@ public class MainActivity extends AppCompatActivity {
             if (command.getDocuments().size() == 1) {
                 Long puzzleNumber = command.getDocuments().get(0).getLong(UsersCollection.USERS_COL_PUZZLE_NUMBER);
 
-                UsersCollection.updateUser(email, name, puzzleNumber);
+                UsersCollection.saveUser(email, name, puzzleNumber);
 
                 user.setEmail(email);
                 user.setName(name);
                 user.setPuzzleNumber(puzzleNumber);
             } else {
-                UsersCollection.addUser(email, name);
+                UsersCollection.saveUser(email, name, 1L);
 
                 user.setEmail(email);
                 user.setName(name);
@@ -254,6 +243,30 @@ public class MainActivity extends AppCompatActivity {
             PuzzleHolder.getInstance().setUser(user);
         }).addOnFailureListener(command -> {
             Toast.makeText(this, R.string.get_from_database_error, Toast.LENGTH_LONG).show();
+        });
+    }
+
+    private void getBetterScores() {
+        ScoresCollection.getBestScores(10).addOnSuccessListener(command -> {
+            List<Score> betterScores = command.getDocuments().stream().map(documentSnapshot -> {
+                Date date = documentSnapshot.getDate(ScoresCollection.SCORES_COL_DATE);
+                String player = documentSnapshot.getString(ScoresCollection.SCORES_COL_EMAIL);
+                Level level = Level.valueOf(documentSnapshot.getString(ScoresCollection.SCORES_COL_LEVEL));
+                Long puzzleNumber = documentSnapshot.getLong(ScoresCollection.SCORES_COL_PUZZLE_NUMBER);
+                Long score = documentSnapshot.getLong(ScoresCollection.SCORES_COL_SCORE);
+
+                return new Score(date, player, level, puzzleNumber, score);
+            }).collect(Collectors.toList());
+
+            if (betterScores.size() > 0) {
+                ListView topScoreList = findViewById(R.id.top_score_list);
+                topScoreList.setVisibility(View.VISIBLE);
+                ScoreListAdapter topScoreAdapter = new ScoreListAdapter(this, betterScores);
+                topScoreList.setAdapter(topScoreAdapter);
+            } else {
+                TextView emptyScoreList = findViewById(R.id.empty_score_list);
+                emptyScoreList.setVisibility(View.VISIBLE);
+            }
         });
     }
 

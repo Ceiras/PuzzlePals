@@ -49,4 +49,9 @@
     <string name="sing_out">Sing Out</string>
     <string name="must_be_authenticated">You must be authenticated</string>
     <string name="get_from_database_error">Error retrieving data from database</string>
+    <string name="date">Date:</string>
+    <string name="level">Level:</string>
+    <string name="puzzle_number">Puzzle Number:</string>
+    <string name="score">Score:</string>
+    <string name="player">Player:</string>
 </resources>

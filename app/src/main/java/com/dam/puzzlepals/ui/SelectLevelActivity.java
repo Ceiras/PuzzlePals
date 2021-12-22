@@ -12,7 +12,6 @@ import com.dam.puzzlepals.holders.PuzzleHolder;
 
 public class SelectLevelActivity extends AppCompatActivity {
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,4 +24,5 @@ public class SelectLevelActivity extends AppCompatActivity {
         Intent puzzleActivityIntent = new Intent(SelectLevelActivity.this, PuzzleActivity.class);
         startActivity(puzzleActivityIntent);
     }
+
 }

@@ -5,33 +5,19 @@ import com.dam.puzzlepals.enums.Level;
 import java.util.Date;
 
 public class Score {
-    private long id;
+
     private Date date;
-    private long score;
+    private String player;
     private Level level;
-    private String image;
+    private Long puzzleNumber;
+    private Long score;
 
-    public Score(long id, Date date, long score, Level level, String image) {
-        this.id = id;
+    public Score(Date date, String name, Level level, Long puzzleNumber, Long score) {
         this.date = date;
-        this.score = score;
+        this.player = name;
         this.level = level;
-        this.image = image;
-    }
-
-    public Score(long id, Date date, long score, Level level) {
-        this.id = id;
-        this.date = date;
+        this.puzzleNumber = puzzleNumber;
         this.score = score;
-        this.level = level;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public Date getDate() {
@@ -42,12 +28,12 @@ public class Score {
         this.date = date;
     }
 
-    public long getScore() {
-        return score;
+    public String getPlayer() {
+        return player;
     }
 
-    public void setScore(long score) {
-        this.score = score;
+    public void setPlayer(String player) {
+        this.player = player;
     }
 
     public Level getLevel() {
@@ -58,22 +44,20 @@ public class Score {
         this.level = level;
     }
 
-    public String getImage() {
-        return image;
+    public Long getPuzzleNumber() {
+        return puzzleNumber;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setPuzzleNumber(Long puzzleNumber) {
+        this.puzzleNumber = puzzleNumber;
     }
 
-    @Override
-    public String toString() {
-        return "Score{" +
-                "id=" + id +
-                ", date=" + date +
-                ", score=" + score +
-                ", level=" + level +
-                ", image='" + image + '\'' +
-                '}';
+    public Long getScore() {
+        return score;
     }
+
+    public void setScore(Long score) {
+        this.score = score;
+    }
+
 }

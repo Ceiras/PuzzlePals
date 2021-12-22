@@ -1,7 +1,6 @@
 package com.dam.puzzlepals.database;
 
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -22,21 +21,13 @@ public class UsersCollection {
         return database.collection(USERS_COLLECTION).whereEqualTo(USERS_COL_EMAIL, email).get();
     }
 
-    public static Task<DocumentReference> addUser(String email, String name) {
+    public static Task<Void> saveUser(String email, String name, Long puzzleNumber) {
         Map<String, Object> user = new HashMap<>();
         user.put(USERS_COL_EMAIL, email);
         user.put(USERS_COL_NAME, name);
-        user.put(USERS_COL_PUZZLE_NUMBER, 1);
-
-        return database.collection(USERS_COLLECTION).add(user);
-    }
-
-    public static Task<Void> updateUser(String email, String name, Long puzzleNumber) {
-        Map<String, Object> user = new HashMap<>();
-        user.put(USERS_COL_NAME, name);
         user.put(USERS_COL_PUZZLE_NUMBER, puzzleNumber);
 
-        return database.collection(USERS_COLLECTION).document(email).update(user);
+        return database.collection(USERS_COLLECTION).document(email).set(user);
     }
 
 }

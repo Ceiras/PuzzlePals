@@ -59,6 +59,8 @@ public class SelectImgActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, R.string.get_from_database_error, Toast.LENGTH_LONG).show();
             }
+        }).addOnFailureListener(command -> {
+            Toast.makeText(this, R.string.get_from_database_error, Toast.LENGTH_LONG).show();
         });
     }
 

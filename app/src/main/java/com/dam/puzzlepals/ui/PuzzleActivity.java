@@ -1,6 +1,5 @@
 package com.dam.puzzlepals.ui;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -24,18 +23,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dam.puzzlepals.MainActivity;
 import com.dam.puzzlepals.R;
-import com.dam.puzzlepals.utils.CalendarManager;
+import com.dam.puzzlepals.database.ScoresCollection;
+import com.dam.puzzlepals.database.UsersCollection;
 import com.dam.puzzlepals.enums.Level;
 import com.dam.puzzlepals.holders.PuzzleHolder;
 import com.dam.puzzlepals.models.PuzzlePiece;
-import com.dam.puzzlepals.models.Score;
-import com.dam.puzzlepals.sqlite.ScoreAPI;
-import com.dam.puzzlepals.utils.GalleryManager;
+import com.dam.puzzlepals.utils.CalendarManager;
 import com.dam.puzzlepals.utils.NotificationsManager;
-import com.dam.puzzlepals.utils.PermissionManger;
 import com.dam.puzzlepals.utils.TimeConverter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PuzzleActivity extends AppCompatActivity {
@@ -130,23 +128,22 @@ public class PuzzleActivity extends AppCompatActivity {
                                         @Override
                                         public void onAnimationEnd(Animation animation) {
                                             PuzzleHolder.getInstance().getPuzzle().finish();
-                                            long score = PuzzleHolder.getInstance().getPuzzle().getScore();
+
+                                            String email = PuzzleHolder.getInstance().getUser().getEmail();
+                                            Date date = new Date();
+                                            Long puzzleNumber = PuzzleHolder.getInstance().getPuzzle().getNumber();
                                             Level level = PuzzleHolder.getInstance().getPuzzle().getLevel();
-                                            String image = GalleryManager.bitmapToBase64(PuzzleHolder.getInstance().getPuzzle().getImage());
+                                            long score = PuzzleHolder.getInstance().getPuzzle().getScore();
 
-                                            boolean isRecord = NotificationsManager.isRecord(PuzzleActivity.this, score);
+                                            NotificationsManager.createNotification(PuzzleActivity.this, email, date, puzzleNumber, level, score);
 
-                                            ScoreAPI scoreApi = new ScoreAPI(PuzzleActivity.this);
-                                            Score scorePuzzle = scoreApi.addScore(score, level, image);
+                                            ScoresCollection.addScore(email, date, puzzleNumber, level, score);
+
+                                            String name = PuzzleHolder.getInstance().getUser().getName();
+                                            UsersCollection.saveUser(email, name, puzzleNumber + 1);
 
                                             CalendarManager calendar = new CalendarManager(PuzzleActivity.this);
-                                            PermissionManger.manageCalendarPermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.READ_CALENDAR);
-                                            PermissionManger.manageCalendarPermissions(PuzzleActivity.this, PuzzleActivity.this, calendar, Manifest.permission.WRITE_CALENDAR);
                                             calendar.addRecordEventToCalendar(PuzzleActivity.this, level, TimeConverter.convertTimeMillisToReadableString(score));
-
-                                            if (isRecord) {
-                                                NotificationsManager.createNotification(PuzzleActivity.this, scorePuzzle, PuzzleHolder.getInstance().getPuzzle().getNumber());
-                                            }
 
                                             final Dialog finishDialog = new Dialog(PuzzleActivity.this, android.R.style.Theme_Black_NoTitleBar);
                                             finishDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));

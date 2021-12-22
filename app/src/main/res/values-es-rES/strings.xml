@@ -50,4 +50,9 @@
     <string name="sing_out">Cerrar sesión</string>
     <string name="must_be_authenticated">Debe estar autenticado</string>
     <string name="get_from_database_error">Error recuperando la información de la base de datos</string>
+    <string name="date">Fecha:</string>
+    <string name="level">Nivel:</string>
+    <string name="puzzle_number">Número de puzzle:</string>
+    <string name="score">Puntuación:</string>
+    <string name="player">Jugador:</string>
 </resources>

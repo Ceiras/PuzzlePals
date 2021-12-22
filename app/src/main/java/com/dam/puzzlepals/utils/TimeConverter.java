@@ -7,7 +7,7 @@ import java.util.Locale;
 public class TimeConverter {
 
     public static String convertDateToCompleteFormatDate(Date date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("E, dd/MMM/yyyy HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
         return dateFormat.format(date);
     }
