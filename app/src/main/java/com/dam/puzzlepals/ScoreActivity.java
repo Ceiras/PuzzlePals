@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
 
 public class ScoreActivity extends AppCompatActivity {
 
-    @BindView((R.id.date_text)
+    @BindView(R.id.date_text)
     TextView dateText;
     @BindView(R.id.score_text)
     TextView scoreText;
@@ -38,7 +38,7 @@ public class ScoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
 
-        ButterKnife.bind(this)
+        ButterKnife.bind(this);
 
         Intent intent = getIntent();
         String date = intent.getStringExtra("date");

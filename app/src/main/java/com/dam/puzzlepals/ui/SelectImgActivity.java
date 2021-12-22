@@ -43,7 +43,7 @@ public class SelectImgActivity extends AppCompatActivity {
 
         nextStep = false;
 
-        ButterKnife.bind(this)
+        ButterKnife.bind(this);
 
         Handler getPuzzleImageHandler = new Handler(Looper.getMainLooper());
         getPuzzleImageHandler.post(this::getPuzzleImage);

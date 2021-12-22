@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 
 public class HelpActivity extends AppCompatActivity {
 
-    @BindView(R.id.id.help_webview)
+    @BindView(R.id.help_webview)
     WebView helpWebView;
 
     @Override
