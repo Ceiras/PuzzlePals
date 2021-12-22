@@ -2,6 +2,7 @@
 <resources>
     <string name="agree">Aceptar</string>
     <string name="app_name">PuzzlePals</string>
+    <string name="attempts_over">Foi imposible recuperar unha nova imaxe. Téntao máis tarde.</string>
     <string name="back">Atrás</string>
     <string name="background_music">Música de fondo</string>
     <string name="calendar_permission_required">Solicitude de permisos de Calendario</string>
@@ -14,9 +15,10 @@
     <string name="close">Pechar</string>
     <string name="date">Data:</string>
     <string name="default_music">Por defecto</string>
+    <string name="download">Descargar</string>
     <string name="easy">Doado</string>
-    <string name="end_game">Fin do xogo!</string>
-    <string name="end_game_description">Chegache ao final do xogo. Non hai más crebacabezas.</string>
+    <string name="end_game">Base de datos baleira</string>
+    <string name="end_game_description">A nosa base de datos non ten máis imaxes para crear un novo quebracabezas, pero se estás de acordo, podemos descargar una imaxe da API de Pexel para ti.</string>
     <string name="error_selecting_song">Erro seleccionando a música</string>
     <string name="finish">Finalizar</string>
     <string name="game_complete">Xogo completado</string>
@@ -46,8 +48,7 @@
     <string name="settings">Axustes</string>
     <string name="sing_out">Pechar sesión</string>
     <string name="start">Inicio</string>
-    <string name="start_again">Comezar de novo</string>
-    <string name="top_score">Puntuación máximas</string>
+    <string name="top_score">Mellores Puntuacións</string>
     <string name="top_score_empty_list">Todavía non existe ningunha puntuación</string>
     <string name="unknown_song">Canción descoñecida</string>
     <string name="your_score">A túa puntuación é de:</string>

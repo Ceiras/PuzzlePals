@@ -4,6 +4,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ImagesCollection {
 
     public static String IMAGES_COLLECTION = "images";
@@ -19,6 +22,14 @@ public class ImagesCollection {
 
     public static Task<QuerySnapshot> getImages() {
         return database.collection(IMAGES_COLLECTION).get();
+    }
+
+    public static void saveImage(Long puzzleNumber, String base64Image) {
+        Map<String, Object> image = new HashMap<>();
+        image.put(IMAGES_COL_PUZZLE_NUMBER, puzzleNumber);
+        image.put(IMAGES_COL_DATA, base64Image);
+
+        database.collection(IMAGES_COLLECTION).add(image);
     }
 
 }

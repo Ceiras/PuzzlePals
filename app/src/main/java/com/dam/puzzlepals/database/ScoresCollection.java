@@ -40,8 +40,6 @@ public class ScoresCollection {
     public static Task<QuerySnapshot> scoreIsBest(String email, Long puzzleNumber, Level level, Long score) {
         return database.collection(SCORES_COLLECTION)
                 .whereEqualTo(SCORES_COL_EMAIL, email)
-                .whereEqualTo(SCORES_COL_PUZZLE_NUMBER, puzzleNumber)
-                .whereEqualTo(SCORES_COL_LEVEL, level.toString())
                 .whereLessThan(SCORES_COL_SCORE, score)
                 .orderBy(SCORES_COL_SCORE, Query.Direction.DESCENDING)
                 .limit(1)

@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.dam.puzzlepals.api.PixelAPI;
 import com.dam.puzzlepals.database.ImagesCollection;
 import com.dam.puzzlepals.database.ScoresCollection;
 import com.dam.puzzlepals.database.UsersCollection;
@@ -42,6 +44,7 @@ import com.dam.puzzlepals.enums.Level;
 import com.dam.puzzlepals.enums.LoginMethod;
 import com.dam.puzzlepals.enums.MusicPlayer;
 import com.dam.puzzlepals.holders.PuzzleHolder;
+import com.dam.puzzlepals.models.Image;
 import com.dam.puzzlepals.models.Score;
 import com.dam.puzzlepals.models.User;
 import com.dam.puzzlepals.services.BackgroundMusicService;
@@ -52,6 +55,7 @@ import com.dam.puzzlepals.ui.SelectImgActivity;
 import com.dam.puzzlepals.ui.SettingsActivity;
 import com.dam.puzzlepals.utils.CalendarManager;
 import com.dam.puzzlepals.utils.FirebaseEvents;
+import com.dam.puzzlepals.utils.GalleryManager;
 import com.dam.puzzlepals.utils.PermissionManger;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -74,14 +78,19 @@ import java.util.stream.Collectors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String DEFAULT_WEB_CLIENT_ID = "883037560613-6krtm86bgm757843sclkh5a9jn0bbm42.apps.googleusercontent.com";
+    private final int MAX_DOWNLOAD_RANDOM_IMAGE_ATTEMPTS = 10;
 
     private final String PREFS_FILE = "com.dam.puzzlepals.PREFERENCE_FILE";
     private final String LOGIN_EMAIL = "email";
     private final String LOGIN_NAME = "name";
+
+    private int downloadRandomImageAttempts = 0;
 
     ActivityResultLauncher<Intent> googleSignInLauncher;
 
@@ -95,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
     TextView nameUserLogged;
 
     MenuItem personalScoresMenuItem;
+    Dialog finishDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -354,41 +364,78 @@ public class MainActivity extends AppCompatActivity {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             ImagesCollection.getImages().addOnSuccessListener(command -> {
                 if (command.getDocuments().size() < PuzzleHolder.getInstance().getUser().getPuzzleNumber()) {
-                    final Dialog finishDialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar);
+                    finishDialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar);
                     finishDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
                     finishDialog.setContentView(R.layout.end_game_dialogue);
                     finishDialog.setCancelable(true);
+
+                    ProgressBar downloadProgress = finishDialog.findViewById(R.id.download_progress);
 
                     Button closeButton = (Button) finishDialog.findViewById(R.id.close_btn);
                     closeButton.setOnClickListener(dialogView -> {
                         finishDialog.dismiss();
                     });
 
-                    Button startAgainButton = (Button) finishDialog.findViewById(R.id.start_again_btn);
+                    Button startAgainButton = (Button) finishDialog.findViewById(R.id.download_btn);
                     startAgainButton.setOnClickListener(dialogView -> {
-                        User user = PuzzleHolder.getInstance().getUser();
-                        UsersCollection.saveUser(user.getEmail(), user.getName(), 1L);
+                        closeButton.setVisibility(View.INVISIBLE);
+                        startAgainButton.setVisibility(View.INVISIBLE);
+                        downloadProgress.setVisibility(View.VISIBLE);
 
-                        user.setPuzzleNumber(1L);
-                        PuzzleHolder.getInstance().setUser(user);
-
-                        finishDialog.dismiss();
-
-                        FirebaseEvents.startGameEvent(this);
-                        Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
-                        startActivity(selectImageActivityIntent);
+                        downloadNewImage();
                     });
 
                     finishDialog.show();
                 } else {
-                    FirebaseEvents.startGameEvent(this);
-                    Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
-                    startActivity(selectImageActivityIntent);
+                    startGame();
                 }
             });
         } else {
             Toast.makeText(MainActivity.this, R.string.must_be_authenticated, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void startGame() {
+        FirebaseEvents.startGameEvent(this);
+        Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
+        startActivity(selectImageActivityIntent);
+    }
+
+    private void downloadNewImage() {
+        Integer randomId = (int) Math.floor(1000000 + Math.random() * 900000);
+        PixelAPI.getPixelService()
+                .findImage(randomId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        (imageResponse) -> {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    saveImageFromPixelAPI(imageResponse);
+                                }
+                            }).start();
+                        },
+                        (throwable) -> {
+                            if (downloadRandomImageAttempts < MAX_DOWNLOAD_RANDOM_IMAGE_ATTEMPTS) {
+                                downloadNewImage();
+                            } else {
+                                Toast.makeText(this, getString(R.string.attempts_over), Toast.LENGTH_LONG).show();
+                            }
+                        },
+                        () -> {
+                            downloadRandomImageAttempts++;
+                        }
+                );
+    }
+
+    private void saveImageFromPixelAPI(Image image) {
+        String urlImage = image.getSrc().getLarge();
+        String base64Image = GalleryManager.urlToBase64(this, urlImage);
+        User user = PuzzleHolder.getInstance().getUser();
+        ImagesCollection.saveImage(user.getPuzzleNumber(), base64Image);
+        finishDialog.dismiss();
+        startGame();
     }
 
 }
