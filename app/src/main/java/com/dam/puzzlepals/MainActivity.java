@@ -61,7 +61,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -85,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private Button loginButton;
     private TextView emailUserLogged;
     private TextView nameUserLogged;
-    private FloatingActionButton personalScoresButton;
+    private MenuItem personalScoresMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.singin_google_btn);
         emailUserLogged = findViewById(R.id.user_logged_email_text);
         nameUserLogged = findViewById(R.id.user_logged_name_text);
-        personalScoresButton = findViewById(R.id.personal_score_button);
 
         phoneCallListener();
 
@@ -226,6 +224,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_action, menu);
 
+        personalScoresMenuItem = menu.findItem(R.id.player_score_item);
+        personalScoresMenuItem.setVisible(false);
+
         return true;
     }
 
@@ -236,6 +237,9 @@ public class MainActivity extends AppCompatActivity {
         if (menuItemId == R.id.help_item) {
             Intent helpActivityIntent = new Intent(this, HelpActivity.class);
             startActivity(helpActivityIntent);
+        } else if (menuItemId == R.id.player_score_item) {
+            Intent personalScoreActivityIntent = new Intent(this, PersonalScoreActivity.class);
+            startActivity(personalScoreActivityIntent);
         } else if (menuItemId == R.id.settings_item) {
             Intent settingsActivityIntent = new Intent(this, SettingsActivity.class);
             startActivity(settingsActivityIntent);
@@ -293,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 PuzzleHolder.getInstance().setUser(user);
-                personalScoresButton.setVisibility(View.VISIBLE);
+                personalScoresMenuItem.setVisible(true);
             }).addOnFailureListener(command -> {
                 Toast.makeText(this, R.string.get_from_database_error, Toast.LENGTH_LONG).show();
             });
@@ -334,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
 
         loginButton.setVisibility(View.VISIBLE);
         userLogged.setVisibility(View.INVISIBLE);
-        personalScoresButton.setVisibility(View.INVISIBLE);
+        personalScoresMenuItem.setVisible(false);
 
         FirebaseEvents.singOutEvent(this, LoginMethod.GOOGLE);
     }
@@ -378,11 +382,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(MainActivity.this, R.string.must_be_authenticated, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public void onClickPersonalScore(View view) {
-        Intent personalScoreActivityIntent = new Intent(this, PersonalScoreActivity.class);
-        startActivity(personalScoreActivityIntent);
     }
 
 }
