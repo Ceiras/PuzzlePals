@@ -72,29 +72,36 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
+
+    private final String DEFAULT_WEB_CLIENT_ID = "883037560613-6krtm86bgm757843sclkh5a9jn0bbm42.apps.googleusercontent.com";
 
     private final String PREFS_FILE = "com.dam.puzzlepals.PREFERENCE_FILE";
     private final String LOGIN_EMAIL = "email";
     private final String LOGIN_NAME = "name";
-    private final String DEFAULT_WEB_CLIENT_ID = "883037560613-6krtm86bgm757843sclkh5a9jn0bbm42.apps.googleusercontent.com";
 
-    private ActivityResultLauncher<Intent> googleSignInLauncher;
-    private LinearLayout userLogged;
-    private Button loginButton;
-    private TextView emailUserLogged;
-    private TextView nameUserLogged;
-    private MenuItem personalScoresMenuItem;
+    ActivityResultLauncher<Intent> googleSignInLauncher;
+
+    @BindView(R.id.user_logged_layout)
+    LinearLayout userLogged;
+    @BindView(R.id.singin_google_btn)
+    Button loginButton;
+    @BindView(R.id.user_logged_email_text)
+    TextView emailUserLogged;
+    @BindView(R.id.user_logged_name_text)
+    TextView nameUserLogged;
+
+    MenuItem personalScoresMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userLogged = findViewById(R.id.user_logged_layout);
-        loginButton = findViewById(R.id.singin_google_btn);
-        emailUserLogged = findViewById(R.id.user_logged_email_text);
-        nameUserLogged = findViewById(R.id.user_logged_name_text);
+        ButterKnife.bind(this);
 
         phoneCallListener();
 
