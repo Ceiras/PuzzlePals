@@ -8,6 +8,7 @@ import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,14 +18,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class HelpActivity extends AppCompatActivity {
+
+    @BindView(R.id.id.help_webview)
+    WebView helpWebView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
 
-        WebView helpWebView = findViewById(R.id.help_webview);
+        ButterKnife.bind(this);
 
         helpWebView.setWebViewClient(new WebViewClient() {
             @Override

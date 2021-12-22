@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -21,12 +22,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class SelectImgActivity extends AppCompatActivity {
 
     private boolean nextStep;
-    private ImageView selectedImageView;
-    private ProgressBar loadingImgSpinner;
-    private Button nextButton;
+
+    @BindView(R.id.selected_img_view)
+    ImageView selectedImageView;
+    @BindView(R.id.loading_image_spinner)
+    ProgressBar loadingImgSpinner;
+    @BindView(R.id.next_button)
+    Button nextButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +43,7 @@ public class SelectImgActivity extends AppCompatActivity {
 
         nextStep = false;
 
-        selectedImageView = findViewById(R.id.selected_img_view);
-        loadingImgSpinner = findViewById(R.id.loading_image_spinner);
-        nextButton = findViewById(R.id.next_button);
+        ButterKnife.bind(this)
 
         Handler getPuzzleImageHandler = new Handler(Looper.getMainLooper());
         getPuzzleImageHandler.post(this::getPuzzleImage);

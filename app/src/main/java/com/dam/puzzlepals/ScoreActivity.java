@@ -19,19 +19,26 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ScoreActivity extends AppCompatActivity {
 
-    private ImageView imageView;
+    @BindView((R.id.date_text)
+    TextView dateText;
+    @BindView(R.id.score_text)
+    TextView scoreText;
+    @BindView(R.id.level_text)
+    TextView levelText;
+    @BindView(R.id.score_image)
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
 
-        TextView dateText = findViewById(R.id.date_text);
-        TextView scoreText = findViewById(R.id.score_text);
-        TextView levelText = findViewById(R.id.level_text);
-        imageView = findViewById(R.id.score_image);
+        ButterKnife.bind(this)
 
         Intent intent = getIntent();
         String date = intent.getStringExtra("date");
