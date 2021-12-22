@@ -5,20 +5,26 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +33,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.dam.puzzlepals.database.ImagesCollection;
 import com.dam.puzzlepals.database.ScoresCollection;
@@ -51,6 +58,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.AuthCredential;
@@ -58,8 +67,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
@@ -95,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
         Handler checkLoginDataHandler = new Handler(Looper.getMainLooper());
         checkLoginDataHandler.post(this::checkLoginData);
 
+        Handler locationHandler = new Handler(Looper.getMainLooper());
+        locationHandler.post(this::setUpLanguageFromLocation);
+
         googleSignInLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
@@ -129,24 +143,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void checkLoginData() {
-        SharedPreferences loginSharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
-        String loginEmail = loginSharedPreferences.getString(LOGIN_EMAIL, null);
-        String loginName = loginSharedPreferences.getString(LOGIN_NAME, null);
-
-        Handler saveUserHandler = new Handler(Looper.getMainLooper());
-        saveUserHandler.post(() -> {
-            saveUser(loginEmail, loginName);
-        });
-
-        if (loginEmail != null && loginName != null) {
-            emailUserLogged.setText(loginEmail);
-            nameUserLogged.setText(loginName);
-            userLogged.setVisibility(View.VISIBLE);
-            loginButton.setVisibility(View.INVISIBLE);
-        }
-    }
-
     private void phoneCallListener() {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         PhoneStateListener phoneStateListener = new PhoneStateListener() {
@@ -165,9 +161,55 @@ public class MainActivity extends AppCompatActivity {
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
+    private void checkLoginData() {
+        SharedPreferences loginSharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
+        String loginEmail = loginSharedPreferences.getString(LOGIN_EMAIL, null);
+        String loginName = loginSharedPreferences.getString(LOGIN_NAME, null);
+
+        Handler saveUserHandler = new Handler(Looper.getMainLooper());
+        saveUserHandler.post(() -> {
+            saveUser(loginEmail, loginName);
+        });
+
+        if (loginEmail != null && loginName != null) {
+            emailUserLogged.setText(loginEmail);
+            nameUserLogged.setText(loginName);
+            userLogged.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void setUpLanguageFromLocation() {
+        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient.getLastLocation().addOnCompleteListener(command -> {
+                Location location = command.getResult();
+                if (location != null) {
+                    Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                    try {
+                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                        String countryCode = addresses.get(0).getCountryCode();
+
+                        Resources resources = this.getResources();
+                        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+                        Configuration configuration = resources.getConfiguration();
+                        configuration.locale = new Locale(countryCode.toLowerCase());
+                        resources.updateConfiguration(configuration, displayMetrics);
+                        FirebaseEvents.location(this, countryCode);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        this.setUpLanguageFromLocation();
 
         Handler getBetterScoresHandler = new Handler(Looper.getMainLooper());
         getBetterScoresHandler.post(this::getBetterScores);
