@@ -58,9 +58,11 @@ public class SelectImgActivity extends AppCompatActivity {
                 nextButton.setVisibility(View.VISIBLE);
             } else {
                 Toast.makeText(this, R.string.get_from_database_error, Toast.LENGTH_LONG).show();
+                finish();
             }
         }).addOnFailureListener(command -> {
             Toast.makeText(this, R.string.get_from_database_error, Toast.LENGTH_LONG).show();
+            finish();
         });
     }
 

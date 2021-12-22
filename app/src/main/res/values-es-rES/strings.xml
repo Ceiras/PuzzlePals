@@ -55,4 +55,8 @@
     <string name="puzzle_number">Número de puzzle:</string>
     <string name="score">Puntuación:</string>
     <string name="player">Jugador:</string>
+    <string name="end_game">¡Fin del juego!</string>
+    <string name="end_game_description">Has llegado al final del juego. No hay más puzzles.</string>
+    <string name="close">Cerrar</string>
+    <string name="start_again">Empezar de nuevo</string>
 </resources>

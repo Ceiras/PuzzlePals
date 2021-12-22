@@ -54,4 +54,8 @@
     <string name="puzzle_number">Puzzle Number:</string>
     <string name="score">Score:</string>
     <string name="player">Player:</string>
+    <string name="end_game">End Game!</string>
+    <string name="end_game_description">You has arrive to the end of the game. There are not more puzzles.</string>
+    <string name="close">Close</string>
+    <string name="start_again">Start Again</string>
 </resources>

@@ -10,11 +10,15 @@ public class ImagesCollection {
 
     private static final FirebaseFirestore database = FirebaseFirestore.getInstance();
 
-    public static final String IMAGES_COL_NUMBER = "number";
+    public static final String IMAGES_COL_PUZZLE_NUMBER = "number";
     public static final String IMAGES_COL_DATA = "data";
 
-    public static Task<QuerySnapshot> getImage(Long level) {
-        return database.collection(IMAGES_COLLECTION).whereEqualTo(IMAGES_COL_NUMBER, level).get();
+    public static Task<QuerySnapshot> getImage(Long puzzleNumber) {
+        return database.collection(IMAGES_COLLECTION).whereEqualTo(IMAGES_COL_PUZZLE_NUMBER, puzzleNumber).get();
+    }
+
+    public static Task<QuerySnapshot> getImages() {
+        return database.collection(IMAGES_COLLECTION).get();
     }
 
 }

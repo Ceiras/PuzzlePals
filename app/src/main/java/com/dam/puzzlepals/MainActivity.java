@@ -1,9 +1,12 @@
 package com.dam.puzzlepals;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,6 +27,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dam.puzzlepals.database.ImagesCollection;
 import com.dam.puzzlepals.database.ScoresCollection;
 import com.dam.puzzlepals.database.UsersCollection;
 import com.dam.puzzlepals.enums.Level;
@@ -284,13 +288,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickPlayButton(View view) {
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            FirebaseEvents.startGameEvent(this);
-            Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
-            startActivity(selectImageActivityIntent);
-        } else {
-            Toast.makeText(MainActivity.this, R.string.must_be_authenticated, Toast.LENGTH_SHORT).show();
-        }
+        ImagesCollection.getImages().addOnSuccessListener(command -> {
+            if (command.getDocuments().size() < PuzzleHolder.getInstance().getUser().getPuzzleNumber()) {
+                final Dialog finishDialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar);
+                finishDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+                finishDialog.setContentView(R.layout.end_game_dialogue);
+                finishDialog.setCancelable(true);
+
+                Button closeButton = (Button) finishDialog.findViewById(R.id.close_btn);
+                closeButton.setOnClickListener(dialogView -> {
+                    finishDialog.dismiss();
+                });
+
+                Button startAgainButton = (Button) finishDialog.findViewById(R.id.start_again_btn);
+                startAgainButton.setOnClickListener(dialogView -> {
+                    User user = PuzzleHolder.getInstance().getUser();
+                    UsersCollection.saveUser(user.getEmail(), user.getName(), 1L);
+
+                    user.setPuzzleNumber(1L);
+                    PuzzleHolder.getInstance().setUser(user);
+
+                    finishDialog.dismiss();
+
+                    FirebaseEvents.startGameEvent(this);
+                    Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
+                    startActivity(selectImageActivityIntent);
+                });
+
+                finishDialog.show();
+            } else {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    FirebaseEvents.startGameEvent(this);
+                    Intent selectImageActivityIntent = new Intent(this, SelectImgActivity.class);
+                    startActivity(selectImageActivityIntent);
+                } else {
+                    Toast.makeText(MainActivity.this, R.string.must_be_authenticated, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 }
